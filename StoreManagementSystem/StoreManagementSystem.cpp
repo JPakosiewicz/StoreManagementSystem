@@ -119,6 +119,38 @@ public:
     Phone(string _name, string _brand, string _system, string _cpu, float _price, int _amount) : Products(_name, _brand, _system, _cpu, _price, _amount) {}
 };
 
+class Employee {
+private:
+    static int numberOfEmployees;
+    int id;
+    float salary;
+    string name;
+    string surname;
+    string jobPosition;
+    string email;
+public:
+    void getEmployeeData() {
+        cout << "Employee " << id << " data:" << endl;
+        cout << "Name: " << name << " " << surname << endl;
+        cout << "Job position: " << jobPosition << endl;
+        cout << "Employee email: " << email << endl;
+    }
+
+    void getEmployeeSlary() {
+        cout << "Employee " << id << " salary: " << salary  << " pln" << endl;
+    }
+
+    void changeEmployeeSalary(float _salary) {
+        salary = _salary;
+    }
+
+    Employee(string _name, string _surname, string _jobPosition, string _email, float _salary) : name(_name), surname(_surname), jobPosition(_jobPosition), email(_email), salary(_salary) {
+        id = ++numberOfEmployees;
+    }
+};
+
+int Employee::numberOfEmployees = 0;
+
 int main()
 {
     Computer pc1("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
@@ -143,13 +175,37 @@ int main()
     phone1.setPhoneSpec(6.67, 4, 128, 5000);
 
     pc1.getProductInfo();
+    cout << endl;
     pc1.getPcSpec();
 
+    cout << endl;
+
     laptop1.getProductInfo();
+    cout << endl;
     laptop1.getLaptopSpec();
 
+    cout << endl;
+
     phone1.getProductInfo();
+    cout << endl;
     phone1.getPhoneSpec();
+
+    cout << endl;
+
+    Employee employee1("John", "Doe", "Manager", "johndoe@gmail.com", 8590);
+    Employee employee2("Alice", "Smith", "Cashier", "alice123@gmail.com", 4200);
+    Employee employee3("Bob", "Johnson", "Technician", "johnsonb@gmail.com", 6130);
+
+    employee1.getEmployeeData();
+    employee1.getEmployeeSlary();
+    cout << endl;
+
+    employee2.getEmployeeData();
+    employee2.getEmployeeSlary();
+    cout << endl;
+
+    employee3.getEmployeeData();
+    employee3.getEmployeeSlary();
 
     return 0;
 }
