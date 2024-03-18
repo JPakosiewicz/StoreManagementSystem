@@ -220,7 +220,7 @@ public:
     }
 };
 
-class UserAccount {
+class UserBalance {
 private:
     float balance;
 public:
@@ -253,9 +253,94 @@ public:
         }
     }
 
-    UserAccount() : balance(5000) {}
+    UserBalance() : balance(5000) {}
 };
 
+class Customer {
+private:
+    static int numberOfUsers;
+    int id;
+    string name;
+    string password;
+    string address;
+    string email;
+    ShoppingCart cart;
+    UserBalance userBalance;
+public:
+    void getUserData() {
+        cout << "User " << id << " data: " << endl;
+        cout << "Name: " << name << endl;
+        cout << "Email: " << email << endl;
+        cout << "Adress: " << address << endl;
+    }
+
+    void changePassword(string previousPassword) {
+        string newPassword;
+        string repeatPassword;
+        if (previousPassword != password) {
+            cout << "Previous password is incorrect! Try again." << endl;
+            return;
+        }
+
+        cout << "Insert new password: ";
+        cin >> newPassword;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear input buffer after first cin
+        cout << "Repeat new password: ";
+        cin >> repeatPassword;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+        
+        while (newPassword != repeatPassword) {
+            newPassword, repeatPassword = "";
+            cout << "Passwords didn't match. Insert new password again: ";
+            cin >> newPassword;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+            cout << "Repeat new password: ";
+            cin >> repeatPassword;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        password = newPassword;
+    }
+
+    void addToCart(Products product) {
+        cart.addProduct(product);
+    }
+
+    void clearCart() {
+        cart.clearCart();
+    }
+
+    void removeProductFromCart(int index) {
+        cart.removeProduct(index);
+    }
+
+    void displayCart() {
+        cart.displayCart();
+    }
+
+    void showBalance() {
+        cout << "Your balance: " << userBalance.getBalance() << " PLN" << endl;
+    }
+
+    void deposit(float amount) {
+        userBalance.deposit(amount);
+    }
+
+    void withdraw(float amount) {
+        userBalance.withdraw(amount);
+    }
+
+    void buyProducts() {
+        userBalance.buy(cart.getCartValue());
+    }
+
+
+    Customer(string _name, string _password, string _email, string _address) : name(_name), password(_password), email(_email), address(_address) {
+        ++numberOfUsers;
+        id = numberOfUsers;
+    }
+};
+
+int Customer::numberOfUsers = 0;
 
 
 int main()
@@ -315,40 +400,25 @@ int main()
     employee3.getEmployeeSlary();
     cout << endl;
 
-    ShoppingCart sc1;
-    sc1.addProduct(pc1);
-    sc1.addProduct(pc2);
-    sc1.addProduct(phone2);
-    sc1.displayCart();
+    Customer customer1("Michael Wilson", "password123", "john@gmail.com", "123 Main St");
+    customer1.getUserData();
+    customer1.addToCart(phone1);
+    customer1.addToCart(laptop2);
+    customer1.displayCart();
+    customer1.deposit(10000);
+    customer1.buyProducts();
+    customer1.changePassword("wrongPassword");
 
     cout << endl;
 
-    sc1.clearCart();
-    sc1.displayCart();
-
-    cout << endl;
-
-    sc1.addProduct(pc1);
-    sc1.addProduct(pc3);
-    sc1.addProduct(laptop1);
-    sc1.displayCart();
-
-    cout << endl;
-
-    sc1.removeProduct(2);
-    sc1.displayCart();
-
-    cout << endl;
-
-    UserAccount ua1;
-    ua1.deposit(10000);
-    ua1.buy(sc1.getCartValue());
-
-    cout << endl;
-
-    UserAccount ua2;
-    ua2.withdraw(3000);
-    ua2.buy(sc1.getCartValue());
+    Customer customer2("Jennifer Brown", "abc123", "jennifer@gmail.com", "456 Elm St");
+    customer2.getUserData();
+    customer2.addToCart(pc1);
+    customer2.addToCart(phone3);
+    customer2.displayCart();
+    customer2.withdraw(3000);
+    customer2.buyProducts();
+    customer2.changePassword("abc123");
 
     return 0;
 }
