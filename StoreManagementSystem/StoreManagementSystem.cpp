@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -18,6 +19,10 @@ public:
         cout << "Product name: " << brand << " " << name << endl;
         cout << "Cost: " << price << " pln" << endl;
         cout << "Amount of products: " << amount << endl;
+    }
+
+    string getProductName() {
+        return brand + " " + name;
     }
 
     float getPrice() {
@@ -171,6 +176,24 @@ public:
 
 int Employee::numberOfEmployees = 0;
 
+class ShoppingCart {
+private:
+    vector<Products> productsInCart;
+public:
+    void addProduct(Products product) {
+        productsInCart.push_back(product);
+    }
+
+    void displayCart() {
+        cout << "Shopping Cart:" << endl;
+        for (auto product : productsInCart) {
+            cout << "- " << product.getProductName() << ": " << product.getPrice() << " PLN" << endl;;
+        }
+    }
+};
+
+
+
 int main()
 {
     Computer pc1("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
@@ -226,6 +249,12 @@ int main()
 
     employee3.getEmployeeData();
     employee3.getEmployeeSlary();
+    cout << endl;
+
+    ShoppingCart sc1;
+    sc1.addProduct(pc1);
+    sc1.addProduct(pc2);
+    sc1.displayCart();
 
     return 0;
 }
