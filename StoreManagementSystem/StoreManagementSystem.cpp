@@ -124,6 +124,7 @@ private:
     static int numberOfEmployees;
     int id;
     float salary;
+    int amountOfDaysOff = 20;
     string name;
     string surname;
     string jobPosition;
@@ -134,6 +135,7 @@ public:
         cout << "Name: " << name << " " << surname << endl;
         cout << "Job position: " << jobPosition << endl;
         cout << "Employee email: " << email << endl;
+        cout << "Amount of days off: " << amountOfDaysOff << " days" << endl;
     }
 
     void getEmployeeSlary() {
@@ -142,6 +144,24 @@ public:
 
     void changeEmployeeSalary(float _salary) {
         salary = _salary;
+    }
+
+    void decreaseAmountOfDaysOff(int _amount) {
+        if (_amount > 0 && amountOfDaysOff - _amount > 0) {
+            amountOfDaysOff -= _amount;
+        }
+        else {
+            cout << "Wrong number" << endl;
+        }
+    }
+
+    void increaseAmountOfDaysOff(int _amount) {
+        if (_amount > 0) {
+            amountOfDaysOff = _amount;
+        }
+        else {
+            cout << "Number needs to be grater than 0" << endl;
+        }
     }
 
     Employee(string _name, string _surname, string _jobPosition, string _email, float _salary) : name(_name), surname(_surname), jobPosition(_jobPosition), email(_email), salary(_salary) {
