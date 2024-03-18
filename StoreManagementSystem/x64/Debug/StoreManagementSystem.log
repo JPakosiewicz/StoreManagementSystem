@@ -1,1 +1,7 @@
-﻿  StoreManagementSystem.vcxproj -> C:\Users\kubat\Desktop\StoreManagementSystem\x64\Debug\StoreManagementSystem.exe
+﻿  StoreManagementSystem.cpp
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(166,109): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(168,123): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(171,25): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(173,25): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(175,25): warning C4305: "argument": obcięcie z "double" do "float"
+  StoreManagementSystem.vcxproj -> C:\Users\kubat\Desktop\StoreManagementSystem\x64\Debug\StoreManagementSystem.exe
