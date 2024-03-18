@@ -182,7 +182,22 @@ private:
     float cartValue = 0;
 public:
     void addProduct(Products product) {
+        cartValue += product.getPrice();
         productsInCart.push_back(product);
+    }
+
+    void clearCart() {
+        cartValue = 0;
+        productsInCart.clear();
+    }
+
+    void removeProduct(int index) {
+        if (index < 0 || index >= productsInCart.size()) {
+            cout << "Invalid index. Product cannot be removed." << endl;
+            return;
+        }
+        cartValue -= productsInCart[index].getPrice();
+        productsInCart.erase(productsInCart.begin() + index);
     }
 
     float getCartValue() {
@@ -190,12 +205,17 @@ public:
     }
 
     void displayCart() {
+        int productIndex = 0;
         cout << "Shopping Cart:" << endl;
         for (auto product : productsInCart) {
-            cartValue += product.getPrice();
-            cout << "- " << product.getProductName() << ": " << product.getPrice() << " PLN" << endl;;
+            productIndex++;
+            cout << productIndex << ") " << product.getProductName() << ": " << product.getPrice() << " PLN" << endl;;
         }
-        cout << endl;
+
+        if (productsInCart.size() == 0) {
+            cout << "No products in shopping cart" << endl;
+        }
+
         cout << "Final price: " << cartValue << " PLN" << endl;
     }
 };
@@ -298,6 +318,24 @@ int main()
     ShoppingCart sc1;
     sc1.addProduct(pc1);
     sc1.addProduct(pc2);
+    sc1.addProduct(phone2);
+    sc1.displayCart();
+
+    cout << endl;
+
+    sc1.clearCart();
+    sc1.displayCart();
+
+    cout << endl;
+
+    sc1.addProduct(pc1);
+    sc1.addProduct(pc3);
+    sc1.addProduct(laptop1);
+    sc1.displayCart();
+
+    cout << endl;
+
+    sc1.removeProduct(2);
     sc1.displayCart();
 
     cout << endl;
