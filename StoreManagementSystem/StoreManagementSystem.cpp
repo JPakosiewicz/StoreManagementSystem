@@ -17,7 +17,7 @@ protected:
 public:
     void getProductInfo() {
         cout << "Product name: " << brand << " " << name << endl;
-        cout << "Cost: " << price << " pln" << endl;
+        cout << "Cost: " << price << " PLN" << endl;
         cout << "Amount of products: " << amount << endl;
     }
 
@@ -144,7 +144,7 @@ public:
     }
 
     void getEmployeeSlary() {
-        cout << "Employee " << id << " salary: " << salary  << " pln" << endl;
+        cout << "Employee " << id << " salary: " << salary  << " PLN" << endl;
     }
 
     void changeEmployeeSalary(float _salary) {
@@ -179,17 +179,61 @@ int Employee::numberOfEmployees = 0;
 class ShoppingCart {
 private:
     vector<Products> productsInCart;
+    float cartValue = 0;
 public:
     void addProduct(Products product) {
         productsInCart.push_back(product);
     }
 
+    float getCartValue() {
+        return cartValue;
+    }
+
     void displayCart() {
         cout << "Shopping Cart:" << endl;
         for (auto product : productsInCart) {
+            cartValue += product.getPrice();
             cout << "- " << product.getProductName() << ": " << product.getPrice() << " PLN" << endl;;
         }
+        cout << endl;
+        cout << "Final price: " << cartValue << " PLN" << endl;
     }
+};
+
+class UserAccount {
+private:
+    float balance;
+public:
+    float getBalance() {
+        return balance;
+    }
+
+    void buy(float cartValue) {
+        if (balance > cartValue) {
+            balance -= cartValue;
+            cout << "You bought the items" << endl;
+        } else {
+            cout << "Insufficient funds to buy products!" << endl;
+        }
+    }
+
+    void deposit(float amount) {
+        if (amount > 0) {
+            balance += amount;
+            cout << "You deposited " << amount << " pln in to your account. Current balance: " << balance << " PLN" << endl;
+        }
+    }
+
+    void withdraw(float amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            cout << "Withdrawn " << amount << " PLN. Current balance: " << balance << " PLN" << endl;
+        } else {
+            cout << "Insufficient funds!" << endl;
+        }
+    }
+
+    UserAccount() : balance(5000) {}
 };
 
 
@@ -255,6 +299,18 @@ int main()
     sc1.addProduct(pc1);
     sc1.addProduct(pc2);
     sc1.displayCart();
+
+    cout << endl;
+
+    UserAccount ua1;
+    ua1.deposit(10000);
+    ua1.buy(sc1.getCartValue());
+
+    cout << endl;
+
+    UserAccount ua2;
+    ua2.withdraw(3000);
+    ua2.buy(sc1.getCartValue());
 
     return 0;
 }
