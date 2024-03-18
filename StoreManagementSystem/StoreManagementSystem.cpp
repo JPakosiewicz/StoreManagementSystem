@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -175,6 +176,64 @@ public:
 };
 
 int Employee::numberOfEmployees = 0;
+
+struct Task {
+    string description;
+    string assignedEmployee;
+    int priority;
+    int timeLeft;
+
+    Task(string _desc, string _assignedEmp, int _priority ,  int _time) : description(_desc), assignedEmployee(_assignedEmp), timeLeft(_time) {
+        if (_priority > 3) {
+            _priority = 3;
+        } 
+
+        if (_priority < 1) {
+            _priority = 1;
+        }
+        priority = _priority;
+    }
+};
+
+class TaskBoard {
+private:
+    vector<Task> employeeTasks;
+
+public:
+    void addTask(string _desc, string _assignedEmp, int _priority, int _time) {
+        employeeTasks.emplace_back(_desc, _assignedEmp, _priority, _time);
+    }
+
+    void removeTask(int index) {
+        if (index >= 0 && index < employeeTasks.size()) {
+            employeeTasks.erase(employeeTasks.begin() + index);
+        } else {
+            cout << "Invalid task index." << endl;
+        }
+    }
+
+    void displayTasksByPriority() {
+        sort(employeeTasks.begin(), employeeTasks.end(), [](Task& currentTask, Task& nextTask) {
+            return currentTask.priority > nextTask.priority;
+        });
+
+        cout << "Tasks sorted by priority:" << endl;
+        for (auto task : employeeTasks) {
+            cout << "Priority: " << task.priority << ", Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Time left: " << task.timeLeft << " days" << endl;
+        }
+    }
+
+    void displayTasksByTimeLeft() {
+        sort(employeeTasks.begin(), employeeTasks.end(), [](Task& currentTask, Task& nextTask) {
+            return currentTask.timeLeft < nextTask.timeLeft;
+        });
+
+        cout << "Tasks sorted by time left:" << endl;
+        for (auto& task : employeeTasks) {
+            cout << "Time left: " << task.timeLeft << " days, Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Priority: " << task.priority << endl;
+        }
+    }
+};
 
 class ShoppingCart {
 private:
@@ -419,6 +478,19 @@ int main()
     customer2.withdraw(3000);
     customer2.buyProducts();
     customer2.changePassword("abc123");
+
+    TaskBoard tb1;
+    tb1.addTask("Organize products on shelves", "Alice Smith", 2, 6);
+    tb1.addTask("Fix broken piece of technology", "Bob Johnson", 0, 2);
+    tb1.addTask("Restock products", "John Doe", 4, 4);
+    tb1.displayTasksByTimeLeft();
+
+    cout << endl;
+
+    tb1.removeTask(2);
+    tb1.displayTasksByPriority();
+
+    cout << endl;
 
     return 0;
 }
