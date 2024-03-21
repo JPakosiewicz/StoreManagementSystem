@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <vector>
 #include <algorithm>
+#include <sstream>
 #include <cassert>
 
 using namespace std;
@@ -17,10 +18,12 @@ protected:
     string system;
     string cpu;
 public:
-    void getProductInfo() {
-        cout << "Product name: " << brand << " " << name << endl;
-        cout << "Cost: " << price << " PLN" << endl;
-        cout << "Amount of products: " << amount << endl;
+    string getProductInfo() {
+        stringstream ss;
+        ss << "Product name: " << brand << " " << name << endl;
+        ss << "Cost: " << price << " PLN" << endl;
+        ss << "Amount of products: " << amount << endl;
+        return ss.str();
     }
 
     string getProductName() {
@@ -58,13 +61,15 @@ public:
         disk = _disk;
     }
     
-    void getPcSpec() {
-        cout << "Computer specifications: " << endl;
-        cout << "* System - " << system << endl;
-        cout << "* Cpu - " << cpu << endl;
-        cout << "* Gpu - " << gpu << endl;
-        cout << "* Memory - " << memory << endl;
-        cout << "* Disk - " << disk << endl;
+    string getPcSpec() {
+        stringstream ss;
+        ss << "Computer specifications: " << endl;
+        ss << "* System - " << system << endl;
+        ss << "* Cpu - " << cpu << endl;
+        ss << "* Gpu - " << gpu << endl;
+        ss << "* Memory - " << memory << endl;
+        ss << "* Disk - " << disk << endl;
+        return ss.str();
     }
 
     Computer(string _name, string _brand, string _system, string _cpu, float _price, int _amount) : Products(_name, _brand, _system, _cpu, _price, _amount) {}
@@ -86,14 +91,16 @@ public:
         screenSize = _screenSize;
     }
     
-    void getLaptopSpec() {
-        cout << "Computer specifications: " << endl;
-        cout << "* System - " << system << endl;
-        cout << "* Cpu - " << cpu << endl;
-        cout << "* Gpu - " << gpu << endl;
-        cout << "* Memory - " << memory << endl;
-        cout << "* Disk - " << disk << endl;
-        cout << "* Screen - " << screenSize << '"' << " " << screenType << endl;
+    string getLaptopSpec() {
+        stringstream ss;
+        ss << "Computer specifications: " << endl;
+        ss << "* System - " << system << endl;
+        ss << "* Cpu - " << cpu << endl;
+        ss << "* Gpu - " << gpu << endl;
+        ss << "* Memory - " << memory << endl;
+        ss << "* Disk - " << disk << endl;
+        ss << "* Screen - " << screenSize << '"' << " " << screenType << endl;
+        return ss.str();
     }
 
     Laptop(string _name, string _brand, string _system, string _cpu, float _price, int _amount) : Products(_name, _brand, _system, _cpu, _price, _amount) {}
@@ -113,14 +120,16 @@ public:
         batterySize = _batterySize;
     }
 
-    void getPhoneSpec() {
-        cout << "Phone specifications: " << endl;
-        cout << "* System - " << system << endl;
-        cout << "* Cpu - " << cpu << endl;
-        cout << "* Screen - " << screenSize << '"' << endl;
-        cout << "* RAM - " << memorySize << " GB" << endl;
-        cout << "* Built-in memory - " << memorySize << "GB" << endl;
-        cout << "* Battery capacity - " << batterySize << " mAh" << endl;
+    string getPhoneSpec() {
+        stringstream ss;
+        ss << "Phone specifications: " << endl;
+        ss << "* System - " << system << endl;
+        ss << "* Cpu - " << cpu << endl;
+        ss << "* Screen - " << screenSize << '"' << endl;
+        ss << "* RAM - " << memorySize << " GB" << endl;
+        ss << "* Built-in memory - " << memorySize << "GB" << endl;
+        ss << "* Battery capacity - " << batterySize << " mAh" << endl;
+        return ss.str();
     }
 
     Phone(string _name, string _brand, string _system, string _cpu, float _price, int _amount) : Products(_name, _brand, _system, _cpu, _price, _amount) {}
@@ -498,7 +507,7 @@ void testProductsClass() {
         assert(productTest.getAmount() == 20);
         productTest.updateAmount(60);
         assert(productTest.getAmount() == 60);
-        productTest.getProductInfo();
+        assert(productTest.getProductInfo() == "Product name: Logitech Keyboard\nCost: 120 PLN\nAmount of products: 60\n");
     }
     cout << "Product class valid" << endl;
     cout << endl;
@@ -511,9 +520,8 @@ void testComputerClass() {
         assert(computerTest.getProductName() == "HP Pro 290 G9 SFF");
         assert(computerTest.getPrice() == 2899);
         assert(computerTest.getAmount() == 200);
-        computerTest.getProductInfo();
-        cout << endl;
-        computerTest.getPcSpec();
+        assert(computerTest.getProductInfo() == "Product name: HP Pro 290 G9 SFF\nCost: 2899 PLN\nAmount of products: 200\n");
+        assert(computerTest.getPcSpec() == "Computer specifications: \n* System - Windows 11 Pro\n* Cpu - Intel Core i5-13500\n* Gpu - Intel UHD Graphics 770\n* Memory - 16 GB (DIMM DDR4, 3200 MHz)\n* Disk - 512 GB SSD PCIe\n");
     }
     cout << "Computer class valid" << endl;
     cout << endl;
@@ -526,9 +534,8 @@ void testLaptopClass() {
         assert(laptopTest.getProductName() == "Lenovo ThinkPad E16");
         assert(laptopTest.getPrice() == 4200);
         assert(laptopTest.getAmount() == 1);
-        laptopTest.getProductInfo();
-        cout << endl;
-        laptopTest.getLaptopSpec();
+        assert(laptopTest.getProductInfo() == "Product name: Lenovo ThinkPad E16\nCost: 4200 PLN\nAmount of products: 1\n");
+        assert(laptopTest.getLaptopSpec() == "Computer specifications: \n* System - Windows 11 Pro\n* Cpu - Intel Core i5-1335U\n* Gpu - Intel Iris Xe Graphics\n* Memory - 16 GB (DDR4, 3200 MHz)\n* Disk - 512 GB SSD M.2 PCIe\n* Screen - 16\" Matte, LED, IPS\n");
     }
     cout << "Laptop class valid" << endl;
     cout << endl;
@@ -541,9 +548,8 @@ void testPhoneClass() {
         assert(phoneTest.getProductName() == "Samsung Galaxy S23");
         assert(phoneTest.getPrice() == 3799);
         assert(phoneTest.getAmount() == 73);
-        phoneTest.getProductInfo();
-        cout << endl;
-        phoneTest.getPhoneSpec();
+        assert(phoneTest.getProductInfo() == "Product name: Samsung Galaxy S23\nCost: 3799 PLN\nAmount of products: 73\n");
+        assert(phoneTest.getPhoneSpec() == "Phone specifications: \n* System - Android 13\n* Cpu - Qualcomm Snapdragon 8 gen 2\n* Screen - 6.1\"\n* RAM - 256 GB\n* Built-in memory - 256GB\n* Battery capacity - 3900 mAh\n");
     }
     cout << "Phone class valid" << endl;
     cout << endl;
