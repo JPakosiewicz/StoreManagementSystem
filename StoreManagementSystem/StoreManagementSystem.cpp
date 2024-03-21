@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cassert>
 
 using namespace std;
 
@@ -401,9 +402,20 @@ public:
 
 int Customer::numberOfUsers = 0;
 
+// Tests declaration
+void testProductsClass();
+void testComputerClass();
+void testLaptopClass();
+void testPhoneClass();
 
 int main()
 {
+    // Tests callout
+    testProductsClass();
+    testComputerClass();
+    testLaptopClass();
+    testPhoneClass();
+
     Computer pc1("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
     pc1.setPcSpec("Intel UHD Graphics 770", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
     Computer pc2("Nitro", "Acer", "No system", "Intel Core i5-12400F", 2999, 100);
@@ -424,24 +436,6 @@ int main()
     phone1.setPhoneSpec(6.1, 8, 256, 3227);
     Phone phone3("Redmi Note 12", "Xiaomi", "Android 13", "Qualcomm Snapdragon 685", 649, 123);
     phone1.setPhoneSpec(6.67, 4, 128, 5000);
-
-    pc1.getProductInfo();
-    cout << endl;
-    pc1.getPcSpec();
-
-    cout << endl;
-
-    laptop1.getProductInfo();
-    cout << endl;
-    laptop1.getLaptopSpec();
-
-    cout << endl;
-
-    phone1.getProductInfo();
-    cout << endl;
-    phone1.getPhoneSpec();
-
-    cout << endl;
 
     Employee employee1("John", "Doe", "Manager", "johndoe@gmail.com", 8590);
     Employee employee2("Alice", "Smith", "Cashier", "alice123@gmail.com", 4200);
@@ -493,4 +487,64 @@ int main()
     cout << endl;
 
     return 0;
+}
+
+// <======================== Tests ========================>
+void testProductsClass() {
+    {
+        Products productTest("Keyboard", "Logitech", "None", "None", 120, 20);
+        assert(productTest.getProductName() == "Logitech Keyboard");
+        assert(productTest.getPrice() == 120);
+        assert(productTest.getAmount() == 20);
+        productTest.updateAmount(60);
+        assert(productTest.getAmount() == 60);
+        productTest.getProductInfo();
+    }
+    cout << "Product class valid" << endl;
+    cout << endl;
+}
+
+void testComputerClass() {
+    {
+        Computer computerTest("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
+        computerTest.setPcSpec("Intel UHD Graphics 770", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
+        assert(computerTest.getProductName() == "HP Pro 290 G9 SFF");
+        assert(computerTest.getPrice() == 2899);
+        assert(computerTest.getAmount() == 200);
+        computerTest.getProductInfo();
+        cout << endl;
+        computerTest.getPcSpec();
+    }
+    cout << "Computer class valid" << endl;
+    cout << endl;
+}
+
+void testLaptopClass() {
+    {
+        Laptop laptopTest("ThinkPad E16", "Lenovo", "Windows 11 Pro", "Intel Core i5-1335U", 4200, 1);
+        laptopTest.setLaptopSpec("Intel Iris Xe Graphics", "16 GB (DDR4, 3200 MHz)", "512 GB SSD M.2 PCIe", "Matte, LED, IPS", 16);
+        assert(laptopTest.getProductName() == "Lenovo ThinkPad E16");
+        assert(laptopTest.getPrice() == 4200);
+        assert(laptopTest.getAmount() == 1);
+        laptopTest.getProductInfo();
+        cout << endl;
+        laptopTest.getLaptopSpec();
+    }
+    cout << "Laptop class valid" << endl;
+    cout << endl;
+}
+
+void testPhoneClass() {
+    {
+        Phone phoneTest("Galaxy S23", "Samsung", "Android 13", "Qualcomm Snapdragon 8 gen 2", 3799, 73);
+        phoneTest.setPhoneSpec(6.1, 8, 256, 3900);
+        assert(phoneTest.getProductName() == "Samsung Galaxy S23");
+        assert(phoneTest.getPrice() == 3799);
+        assert(phoneTest.getAmount() == 73);
+        phoneTest.getProductInfo();
+        cout << endl;
+        phoneTest.getPhoneSpec();
+    }
+    cout << "Phone class valid" << endl;
+    cout << endl;
 }
