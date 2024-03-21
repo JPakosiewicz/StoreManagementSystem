@@ -146,16 +146,20 @@ private:
     string jobPosition;
     string email;
 public:
-    void getEmployeeData() {
-        cout << "Employee " << id << " data:" << endl;
-        cout << "Name: " << name << " " << surname << endl;
-        cout << "Job position: " << jobPosition << endl;
-        cout << "Employee email: " << email << endl;
-        cout << "Amount of days off: " << amountOfDaysOff << " days" << endl;
+    string getEmployeeData() {
+        stringstream ss;
+        ss << "Employee " << id << " data:" << endl;
+        ss << "Name: " << name << " " << surname << endl;
+        ss << "Job position: " << jobPosition << endl;
+        ss << "Employee email: " << email << endl;
+        ss << "Amount of days off: " << amountOfDaysOff << " days" << endl;
+        return ss.str();
     }
 
-    void getEmployeeSlary() {
-        cout << "Employee " << id << " salary: " << salary  << " PLN" << endl;
+    string getEmployeeSlary() {
+        stringstream ss;
+        ss << "Employee " << id << " salary: " << salary << " PLN" << endl;
+        return ss.str();
     }
 
     void changeEmployeeSalary(float _salary) {
@@ -416,6 +420,7 @@ void testProductsClass();
 void testComputerClass();
 void testLaptopClass();
 void testPhoneClass();
+void testEmployeeClass();
 
 int main()
 {
@@ -424,6 +429,7 @@ int main()
     testComputerClass();
     testLaptopClass();
     testPhoneClass();
+    testEmployeeClass();
 
     Computer pc1("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
     pc1.setPcSpec("Intel UHD Graphics 770", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
@@ -552,5 +558,26 @@ void testPhoneClass() {
         assert(phoneTest.getPhoneSpec() == "Phone specifications: \n* System - Android 13\n* Cpu - Qualcomm Snapdragon 8 gen 2\n* Screen - 6.1\"\n* RAM - 256 GB\n* Built-in memory - 256GB\n* Battery capacity - 3900 mAh\n");
     }
     cout << "Phone class valid" << endl;
+    cout << endl;
+}
+
+void testEmployeeClass() {
+    {
+        Employee employeeTest("John", "Doe", "Manager", "johndoe@gmail.com", 5000);
+        
+        assert(employeeTest.getEmployeeData() == "Employee 1 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 20 days\n");
+        
+        assert(employeeTest.getEmployeeSlary() == "Employee 1 salary: 5000 PLN\n");
+        
+        employeeTest.changeEmployeeSalary(6000);
+        assert(employeeTest.getEmployeeSlary() == "Employee 1 salary: 6000 PLN\n");
+
+        employeeTest.decreaseAmountOfDaysOff(5);
+        assert(employeeTest.getEmployeeData() == "Employee 1 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 15 days\n");
+
+        employeeTest.increaseAmountOfDaysOff(25);
+        assert(employeeTest.getEmployeeData() == "Employee 1 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 25 days\n");
+    }
+    cout << "Employee class valid" << endl;
     cout << endl;
 }
