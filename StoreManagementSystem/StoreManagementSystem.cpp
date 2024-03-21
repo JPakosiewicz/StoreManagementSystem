@@ -281,19 +281,21 @@ public:
         return cartValue;
     }
 
-    void displayCart() {
+    string displayCart() {
+        stringstream ss;
         int productIndex = 0;
-        cout << "Shopping Cart:" << endl;
+        ss << "Shopping Cart:" << endl;
         for (auto product : productsInCart) {
             productIndex++;
-            cout << productIndex << ") " << product.getProductName() << ": " << product.getPrice() << " PLN" << endl;;
+            ss << productIndex << ") " << product.getProductName() << ": " << product.getPrice() << " PLN" << endl;;
         }
 
         if (productsInCart.size() == 0) {
-            cout << "No products in shopping cart" << endl;
+            ss << "No products in shopping cart" << endl;
         }
 
-        cout << "Final price: " << cartValue << " PLN" << endl;
+        ss << "Final price: " << cartValue << " PLN" << endl;
+        return ss.str();
     }
 };
 
@@ -305,29 +307,35 @@ public:
         return balance;
     }
 
-    void buy(float cartValue) {
+    string buy(float cartValue) {
+        stringstream ss;
         if (balance > cartValue) {
             balance -= cartValue;
-            cout << "You bought the items" << endl;
+            ss << "You bought the items" << endl;
         } else {
-            cout << "Insufficient funds to buy products!" << endl;
+            ss << "Insufficient funds to buy products!" << endl;
         }
+        return ss.str();
     }
 
-    void deposit(float amount) {
+    string deposit(float amount) {
+        stringstream ss;
         if (amount > 0) {
             balance += amount;
-            cout << "You deposited " << amount << " pln in to your account. Current balance: " << balance << " PLN" << endl;
+            ss << "You deposited " << amount << " pln in to your account. Current balance: " << balance << " PLN" << endl;
         }
+        return ss.str();
     }
 
-    void withdraw(float amount) {
+    string withdraw(float amount) {
+        stringstream ss;
         if (balance >= amount) {
             balance -= amount;
-            cout << "Withdrawn " << amount << " PLN. Current balance: " << balance << " PLN" << endl;
+            ss << "Withdrawn " << amount << " PLN. Current balance: " << balance << " PLN" << endl;
         } else {
-            cout << "Insufficient funds!" << endl;
+            ss << "Insufficient funds!" << endl;
         }
+        return ss.str();
     }
 
     UserBalance() : balance(5000) {}
@@ -426,6 +434,8 @@ void testLaptopClass();
 void testPhoneClass();
 void testEmployeeClass();
 void testTaskBoardClass();
+void testShoppingCart();
+void testUserBalance();
 
 int main()
 {
@@ -436,6 +446,8 @@ int main()
     testPhoneClass();
     testEmployeeClass();
     testTaskBoardClass();
+    testShoppingCart();
+    testUserBalance();
 
     Computer pc1("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
     pc1.setPcSpec("Intel UHD Graphics 770", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
@@ -462,18 +474,6 @@ int main()
     Employee employee2("Alice", "Smith", "Cashier", "alice123@gmail.com", 4200);
     Employee employee3("Bob", "Johnson", "Technician", "johnsonb@gmail.com", 6130);
 
-    employee1.getEmployeeData();
-    employee1.getEmployeeSlary();
-    cout << endl;
-
-    employee2.getEmployeeData();
-    employee2.getEmployeeSlary();
-    cout << endl;
-
-    employee3.getEmployeeData();
-    employee3.getEmployeeSlary();
-    cout << endl;
-
     Customer customer1("Michael Wilson", "password123", "john@gmail.com", "123 Main St");
     customer1.getUserData();
     customer1.addToCart(phone1);
@@ -493,19 +493,6 @@ int main()
     customer2.withdraw(3000);
     customer2.buyProducts();
     customer2.changePassword("abc123");
-
-    TaskBoard tb1;
-    tb1.addTask("Organize products on shelves", "Alice Smith", 2, 6);
-    tb1.addTask("Fix broken piece of technology", "Bob Johnson", 0, 2);
-    tb1.addTask("Restock products", "John Doe", 4, 4);
-    tb1.displayTasksByTimeLeft();
-
-    cout << endl;
-
-    tb1.removeTask(2);
-    tb1.displayTasksByPriority();
-
-    cout << endl;
 
     return 0;
 }
@@ -590,22 +577,61 @@ void testEmployeeClass() {
 
 void testTaskBoardClass() {
     {
-        TaskBoard taskBoard;
+        TaskBoard taskBoardTest;
 
-        taskBoard.addTask("Fix PC", "John Doe", 2, 5);
-        taskBoard.addTask("Clean floor", "Jane Smith", 3, 3);
-        taskBoard.addTask("Organize documents", "Alice Johnson", 1, 7);
+        taskBoardTest.addTask("Fix PC", "John Doe", 2, 5);
+        taskBoardTest.addTask("Clean floor", "Jane Smith", 3, 3);
+        taskBoardTest.addTask("Organize documents", "Alice Johnson", 1, 7);
 
-        string tasksByPriority = taskBoard.displayTasksByPriority();
+        string tasksByPriority = taskBoardTest.displayTasksByPriority();
         assert(tasksByPriority == "Tasks sorted by priority:\nPriority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nPriority: 2, Description: Fix PC, Assigned to: John Doe, Time left: 5 days\nPriority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
 
-        string tasksByTimeLeft = taskBoard.displayTasksByTimeLeft();
+        string tasksByTimeLeft = taskBoardTest.displayTasksByTimeLeft();
         assert(tasksByTimeLeft == "Tasks sorted by time left:\nTime left: 3 days, Description: Clean floor, Assigned to: Jane Smith, Priority: 3\nTime left: 5 days, Description: Fix PC, Assigned to: John Doe, Priority: 2\nTime left: 7 days, Description: Organize documents, Assigned to: Alice Johnson, Priority: 1\n");
 
-        taskBoard.removeTask(1);
-        tasksByPriority = taskBoard.displayTasksByPriority();
+        taskBoardTest.removeTask(1);
+        tasksByPriority = taskBoardTest.displayTasksByPriority();
         assert(tasksByPriority == "Tasks sorted by priority:\nPriority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nPriority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
     }
     cout << "TaskBoard class valid" << endl;
+    cout << endl;
+}
+
+void testShoppingCart() {
+    {
+        Products product1("Keyboard", "Razer", "Windows", "AMD", 99.99, 1);
+        Products product2("Mouse", "Logitech", "Windows", "Intel", 49.99, 2);
+
+        ShoppingCart cartTest;
+        cartTest.addProduct(product1);
+        cartTest.addProduct(product2);
+
+        assert(abs(cartTest.getCartValue() - (99.99 + 49.99)) < 0.01);
+
+        string expectedCartDisplay = "Shopping Cart:\n1) Razer Keyboard: 99.99 PLN\n2) Logitech Mouse: 49.99 PLN\nFinal price: 149.98 PLN\n";
+        assert(cartTest.displayCart() == expectedCartDisplay);
+
+        cartTest.removeProduct(0);
+        assert(abs(cartTest.getCartValue() - 49.99) < 0.01);
+    }
+    cout << "ShoppingCart class valid" << endl;
+    cout << endl;
+}
+
+void testUserBalance() {
+    {
+        UserBalance balanceTest;
+
+        balanceTest.deposit(1000);
+        assert(balanceTest.getBalance() == 6000); // 5000 + 1000
+
+        balanceTest.withdraw(2000);
+        assert(balanceTest.getBalance() == 4000); // 6000 - 2000
+
+        assert(balanceTest.buy(1000) == "You bought the items\n");
+
+        assert(balanceTest.buy(5000) == "Insufficient funds to buy products!\n");
+    }
+    cout << "UserBalance class valid" << endl;
     cout << endl;
 }
