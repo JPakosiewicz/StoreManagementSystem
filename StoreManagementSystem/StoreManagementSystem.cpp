@@ -352,11 +352,13 @@ private:
     ShoppingCart cart;
     UserBalance userBalance;
 public:
-    void getUserData() {
-        cout << "User " << id << " data: " << endl;
-        cout << "Name: " << name << endl;
-        cout << "Email: " << email << endl;
-        cout << "Adress: " << address << endl;
+    string getUserData() {
+        stringstream ss;
+        ss << "User " << id << " data: " << endl;
+        ss << "Name: " << name << endl;
+        ss << "Email: " << email << endl;
+        ss << "Adress: " << address << endl;
+        return ss.str();
     }
 
     void changePassword(string previousPassword) {
@@ -398,12 +400,14 @@ public:
         cart.removeProduct(index);
     }
 
-    void displayCart() {
-        cart.displayCart();
+    string displayCart() {
+        return cart.displayCart();
     }
 
-    void showBalance() {
-        cout << "Your balance: " << userBalance.getBalance() << " PLN" << endl;
+    string showBalance() {
+        stringstream ss;
+        ss << "Your balance: " << userBalance.getBalance() << " PLN" << endl;
+        return ss.str();
     }
 
     void deposit(float amount) {
@@ -414,8 +418,12 @@ public:
         userBalance.withdraw(amount);
     }
 
-    void buyProducts() {
-        userBalance.buy(cart.getCartValue());
+    bool buyProducts() {
+        if (userBalance.buy(cart.getCartValue()) == "You bought the items\n") {
+            cart.clearCart();
+            return true;
+        }
+        return false;
     }
 
 
@@ -436,6 +444,7 @@ void testEmployeeClass();
 void testTaskBoardClass();
 void testShoppingCart();
 void testUserBalance();
+void testCustomerClass();
 
 int main()
 {
@@ -448,6 +457,7 @@ int main()
     testTaskBoardClass();
     testShoppingCart();
     testUserBalance();
+    testCustomerClass();
 
     Computer pc1("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
     pc1.setPcSpec("Intel UHD Graphics 770", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
@@ -473,6 +483,11 @@ int main()
     Employee employee1("John", "Doe", "Manager", "johndoe@gmail.com", 8590);
     Employee employee2("Alice", "Smith", "Cashier", "alice123@gmail.com", 4200);
     Employee employee3("Bob", "Johnson", "Technician", "johnsonb@gmail.com", 6130);
+
+    TaskBoard tb1;
+    tb1.addTask("Organize products on shelves", "Alice Smith", 2, 6);
+    tb1.addTask("Fix broken piece of technology", "Bob Johnson", 0, 2);
+    tb1.addTask("Restock products", "John Doe", 4, 4);
 
     Customer customer1("Michael Wilson", "password123", "john@gmail.com", "123 Main St");
     customer1.getUserData();
@@ -633,5 +648,39 @@ void testUserBalance() {
         assert(balanceTest.buy(5000) == "Insufficient funds to buy products!\n");
     }
     cout << "UserBalance class valid" << endl;
+    cout << endl;
+}
+
+void testCustomerClass() {
+    {
+        Customer customerTest("John Doe", "password123", "john@example.com", "123 Main Street");
+
+        assert(customerTest.getUserData() == "User 1 data: \nName: John Doe\nEmail: john@example.com\nAdress: 123 Main Street\n");
+
+        Products product1("Keyboard", "Logitech", "None", "None", 120, 1);
+        Products product2("Mouse", "Logitech", "None", "None", 50, 1);
+        customerTest.addToCart(product1);
+        customerTest.addToCart(product2);
+
+        assert(customerTest.displayCart() == "Shopping Cart:\n1) Logitech Keyboard: 120 PLN\n2) Logitech Mouse: 50 PLN\nFinal price: 170 PLN\n");
+
+        customerTest.clearCart();
+        assert(customerTest.displayCart() == "Shopping Cart:\nNo products in shopping cart\nFinal price: 0 PLN\n");
+
+        customerTest.deposit(1000);
+        assert(customerTest.showBalance() == "Your balance: 6000 PLN\n");
+
+        customerTest.withdraw(500);
+        assert(customerTest.showBalance() == "Your balance: 5500 PLN\n");
+
+        customerTest.addToCart(product1);
+        assert(customerTest.buyProducts() == true);
+        assert(customerTest.showBalance() == "Your balance: 5380 PLN\n");
+
+        customerTest.addToCart(product2);
+        customerTest.removeProductFromCart(0);
+        assert(customerTest.displayCart() == "Shopping Cart:\nNo products in shopping cart\nFinal price: 0 PLN\n");
+    }
+    cout << "Customer class valid" << endl;
     cout << endl;
 }
