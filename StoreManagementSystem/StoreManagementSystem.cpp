@@ -226,26 +226,30 @@ public:
         }
     }
 
-    void displayTasksByPriority() {
+    string displayTasksByPriority() {
         sort(employeeTasks.begin(), employeeTasks.end(), [](Task& currentTask, Task& nextTask) {
             return currentTask.priority > nextTask.priority;
         });
 
-        cout << "Tasks sorted by priority:" << endl;
+        stringstream ss;
+        ss << "Tasks sorted by priority:" << endl;
         for (auto task : employeeTasks) {
-            cout << "Priority: " << task.priority << ", Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Time left: " << task.timeLeft << " days" << endl;
+            ss << "Priority: " << task.priority << ", Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Time left: " << task.timeLeft << " days" << endl;
         }
+        return ss.str();
     }
 
-    void displayTasksByTimeLeft() {
+    string displayTasksByTimeLeft() {
         sort(employeeTasks.begin(), employeeTasks.end(), [](Task& currentTask, Task& nextTask) {
             return currentTask.timeLeft < nextTask.timeLeft;
         });
 
-        cout << "Tasks sorted by time left:" << endl;
+        stringstream ss;
+        ss << "Tasks sorted by time left:" << endl;
         for (auto& task : employeeTasks) {
-            cout << "Time left: " << task.timeLeft << " days, Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Priority: " << task.priority << endl;
+            ss << "Time left: " << task.timeLeft << " days, Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Priority: " << task.priority << endl;
         }
+        return ss.str();
     }
 };
 
@@ -421,6 +425,7 @@ void testComputerClass();
 void testLaptopClass();
 void testPhoneClass();
 void testEmployeeClass();
+void testTaskBoardClass();
 
 int main()
 {
@@ -430,6 +435,7 @@ int main()
     testLaptopClass();
     testPhoneClass();
     testEmployeeClass();
+    testTaskBoardClass();
 
     Computer pc1("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
     pc1.setPcSpec("Intel UHD Graphics 770", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
@@ -579,5 +585,27 @@ void testEmployeeClass() {
         assert(employeeTest.getEmployeeData() == "Employee 1 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 25 days\n");
     }
     cout << "Employee class valid" << endl;
+    cout << endl;
+}
+
+void testTaskBoardClass() {
+    {
+        TaskBoard taskBoard;
+
+        taskBoard.addTask("Fix PC", "John Doe", 2, 5);
+        taskBoard.addTask("Clean floor", "Jane Smith", 3, 3);
+        taskBoard.addTask("Organize documents", "Alice Johnson", 1, 7);
+
+        string tasksByPriority = taskBoard.displayTasksByPriority();
+        assert(tasksByPriority == "Tasks sorted by priority:\nPriority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nPriority: 2, Description: Fix PC, Assigned to: John Doe, Time left: 5 days\nPriority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
+
+        string tasksByTimeLeft = taskBoard.displayTasksByTimeLeft();
+        assert(tasksByTimeLeft == "Tasks sorted by time left:\nTime left: 3 days, Description: Clean floor, Assigned to: Jane Smith, Priority: 3\nTime left: 5 days, Description: Fix PC, Assigned to: John Doe, Priority: 2\nTime left: 7 days, Description: Organize documents, Assigned to: Alice Johnson, Priority: 1\n");
+
+        taskBoard.removeTask(1);
+        tasksByPriority = taskBoard.displayTasksByPriority();
+        assert(tasksByPriority == "Tasks sorted by priority:\nPriority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nPriority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
+    }
+    cout << "TaskBoard class valid" << endl;
     cout << endl;
 }
