@@ -256,14 +256,17 @@ public:
 class ShoppingCart {
 private:
     vector<Products> productsInCart;
+    int numberOfItems = 0;
     float cartValue = 0;
 public:
     void addProduct(Products product) {
+        numberOfItems++;
         cartValue += product.getPrice();
         productsInCart.push_back(product);
     }
 
     void clearCart() {
+        numberOfItems = 0;
         cartValue = 0;
         productsInCart.clear();
     }
@@ -273,8 +276,13 @@ public:
             cout << "Invalid index. Product cannot be removed." << endl;
             return;
         }
+        numberOfItems--;
         cartValue -= productsInCart[index].getPrice();
         productsInCart.erase(productsInCart.begin() + index);
+    }
+
+    int getNumberOfItems() {
+        return numberOfItems;
     }
 
     float getCartValue() {
@@ -322,7 +330,7 @@ public:
         stringstream ss;
         if (amount > 0) {
             balance += amount;
-            ss << "You deposited " << amount << " pln in to your account. Current balance: " << balance << " PLN" << endl;
+            ss << "You deposited " << amount << " PLN in to your account." << endl;
         }
         return ss.str();
     }
@@ -331,7 +339,7 @@ public:
         stringstream ss;
         if (balance >= amount) {
             balance -= amount;
-            ss << "Withdrawn " << amount << " PLN. Current balance: " << balance << " PLN" << endl;
+            ss << "Withdrawn " << amount << " PLN."<< endl;
         } else {
             ss << "Insufficient funds!" << endl;
         }
@@ -352,9 +360,17 @@ private:
     ShoppingCart cart;
     UserBalance userBalance;
 public:
+    string getUserName() {
+        return name;
+    }
+
+    string getUserPassword() {
+        return password;
+    }
+
     string getUserData() {
         stringstream ss;
-        ss << "User " << id << " data: " << endl;
+        ss << "User data: " << endl;
         ss << "Name: " << name << endl;
         ss << "Email: " << email << endl;
         ss << "Adress: " << address << endl;
@@ -386,6 +402,8 @@ public:
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
         password = newPassword;
+        system("cls");
+        cout << "Password has been changed!" << endl;
     }
 
     void addToCart(Products product) {
@@ -400,6 +418,10 @@ public:
         cart.removeProduct(index);
     }
 
+    int getNumberOfItemsInCart() {
+        return cart.getNumberOfItems();
+    }
+
     string displayCart() {
         return cart.displayCart();
     }
@@ -410,12 +432,12 @@ public:
         return ss.str();
     }
 
-    void deposit(float amount) {
-        userBalance.deposit(amount);
+    string deposit(float amount) {
+        return userBalance.deposit(amount);
     }
 
-    void withdraw(float amount) {
-        userBalance.withdraw(amount);
+    string withdraw(float amount) {
+        return userBalance.withdraw(amount);
     }
 
     bool buyProducts() {
@@ -434,6 +456,23 @@ public:
 };
 
 int Customer::numberOfUsers = 0;
+
+int userChoiceVerify(int userChoice, vector<int> listOfChoices, bool clearConsole = true) {
+    bool validChoice = find(listOfChoices.begin(), listOfChoices.end(), userChoice) != listOfChoices.end();
+
+    while (!validChoice) {
+        cout << "Wrong number. Choose a number from the list." << endl;
+        cout << "Your choice: ";
+        cin >> userChoice;
+
+        validChoice = find(listOfChoices.begin(), listOfChoices.end(), userChoice) != listOfChoices.end();
+    }
+
+    if (clearConsole) {
+        system("cls");
+    }
+    return userChoice;
+}
 
 // Tests declaration
 void testProductsClass();
@@ -462,23 +501,23 @@ int main()
     Computer pc1("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
     pc1.setPcSpec("Intel UHD Graphics 770", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
     Computer pc2("Nitro", "Acer", "No system", "Intel Core i5-12400F", 2999, 100);
-    pc1.setPcSpec("NVIDIA GeForce GTX 1660 SUPER", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
+    pc2.setPcSpec("NVIDIA GeForce GTX 1660 SUPER", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
     Computer pc3("G4M3R HERO", "X-kom", "Windows 11 Home", "Intel Core i7-14700F", 8700, 50);
-    pc1.setPcSpec("NVIDIA GeForce RTX 4070 Super", "32 GB (DIMM DDR5, 6000MHz)", "1000 GB SSD M.2 PCIe 4.0");
+    pc3.setPcSpec("NVIDIA GeForce RTX 4070 Super", "32 GB (DIMM DDR5, 6000MHz)", "1000 GB SSD M.2 PCIe 4.0");
 
     Laptop laptop1("ThinkPad E16", "Lenovo", "Windows 11 Pro", "Intel Core i5-1335U", 4200, 1);
     laptop1.setLaptopSpec("Intel Iris Xe Graphics", "16 GB (DDR4, 3200 MHz)", "512 GB SSD M.2 PCIe", "Matte, LED, IPS", 16);
     Laptop laptop2("Extensa", "Acer", "Windows 11 Home", "Intel Core i5-1235U", 2399, 152);
     laptop2.setLaptopSpec("Intel UHD", "16 GB (DDR4, 3200 MHz)", "1000 GB SSD M.2 PCIe", "Matte, LED, IPS", 15.6);
-    Laptop laptop3("Bravo 15", "MSI", "No system", "AMD Ryzen™ 7 7735HS", 4399, 34);
-    laptop2.setLaptopSpec("NVIDIA GeForce RTX 4060", "16 GB (DDR5, 4800 MHz)", "1000 GB SSD M.2 PCIe", "Matte, LED, IPS", 15.6);
+    Laptop laptop3("Bravo 15", "MSI", "No system", "AMD Ryzen 7 7735HS", 4399, 34);
+    laptop3.setLaptopSpec("NVIDIA GeForce RTX 4060", "16 GB (DDR5, 4800 MHz)", "1000 GB SSD M.2 PCIe", "Matte, LED, IPS", 15.6);
 
     Phone phone1("Galaxy S23", "Samsung", "Android 13", "Qualcomm Snapdragon 8 gen 2", 3799, 73);
     phone1.setPhoneSpec(6.1, 8, 256, 3900);
     Phone phone2("iPhone 13", "Apple", "iOS 15", "Apple A15 Bionic", 2649, 10);
-    phone1.setPhoneSpec(6.1, 8, 256, 3227);
+    phone2.setPhoneSpec(6.1, 8, 256, 3227);
     Phone phone3("Redmi Note 12", "Xiaomi", "Android 13", "Qualcomm Snapdragon 685", 649, 123);
-    phone1.setPhoneSpec(6.67, 4, 128, 5000);
+    phone3.setPhoneSpec(6.67, 4, 128, 5000);
 
     Employee employee1("John", "Doe", "Manager", "johndoe@gmail.com", 8590);
     Employee employee2("Alice", "Smith", "Cashier", "alice123@gmail.com", 4200);
@@ -489,25 +528,385 @@ int main()
     tb1.addTask("Fix broken piece of technology", "Bob Johnson", 0, 2);
     tb1.addTask("Restock products", "John Doe", 4, 4);
 
-    Customer customer1("Michael Wilson", "password123", "john@gmail.com", "123 Main St");
-    customer1.getUserData();
-    customer1.addToCart(phone1);
-    customer1.addToCart(laptop2);
-    customer1.displayCart();
-    customer1.deposit(10000);
-    customer1.buyProducts();
-    customer1.changePassword("wrongPassword");
+    vector <Customer> customerList;
+    customerList.emplace_back("Michael Wilson", "password123", "john@gmail.com", "123 Main St");
+    customerList.emplace_back("Jennifer Brown", "abc123", "jennifer@gmail.com", "456 Elm St");
 
-    cout << endl;
+    bool isTheProgramWorking = true;
+    int userChoice = 0;
 
-    Customer customer2("Jennifer Brown", "abc123", "jennifer@gmail.com", "456 Elm St");
-    customer2.getUserData();
-    customer2.addToCart(pc1);
-    customer2.addToCart(phone3);
-    customer2.displayCart();
-    customer2.withdraw(3000);
-    customer2.buyProducts();
-    customer2.changePassword("abc123");
+    int userAccount = -1;
+    bool productsListActive = false;
+    bool userBalanceActive = false;
+    bool userShoppingCartActive = false;
+
+    Employee* currentEmployee;
+
+    cout << "Hello! Choose your role: (1) Customer, (2) Employee" << endl;
+    cout << "Your choice: ";
+    cin >> userChoice;
+    userChoice = userChoiceVerify(userChoice, { 1, 2 });
+
+    if (userChoice == 1) {
+        while (isTheProgramWorking) {
+            cout << "Welcome customer! What would you like to do?" << endl;
+            
+            if (userAccount == -1) {
+                cout << "1) Show list of products" << endl;
+                cout << "2) Log in" << endl;
+                cout << "3) Create account" << endl;
+                cout << "4) Exit" << endl;
+                cin >> userChoice;
+                userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4 });
+            }
+
+            if (userAccount != -1) {
+                cout << "1) Show list of products" << endl;
+                cout << "2) Show user data" << endl;
+                cout << "3) Show shopping cart" << endl;
+                cout << "4) Show my balance" << endl;
+                cout << "5) Change password" << endl;
+                cout << "6) Log off" << endl;
+                cout << "7) Exit" << endl;
+                cin >> userChoice;
+                userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4, 5, 6, 7});
+            }
+
+            if(userChoice == 1) {
+                productsListActive = true;
+                while (productsListActive) {
+                    cout << "<Products list>" << endl;
+                    cout << endl;
+                    cout << "Computers:" << endl;
+                    cout << "[1] " << pc1.getProductName() << " - " << pc1.getPrice() << " PLN (" << pc1.getAmount() << " pieces left)" << endl;
+                    cout << "[2] " << pc2.getProductName() << " - " << pc2.getPrice() << " PLN (" << pc2.getAmount() << " pieces left)" << endl;
+                    cout << "[3] " << pc3.getProductName() << " - " << pc3.getPrice() << " PLN (" << pc3.getAmount() << " pieces left)" << endl;
+                    cout << endl;
+                    cout << "Laptops:" << endl;
+                    cout << "[4] " << laptop1.getProductName() << " - " << laptop1.getPrice() << " PLN (" << laptop1.getAmount() << " pieces left)" << endl;
+                    cout << "[5] " << laptop2.getProductName() << " - " << laptop2.getPrice() << " PLN (" << laptop2.getAmount() << " pieces left)" << endl;
+                    cout << "[6] " << laptop3.getProductName() << " - " << laptop3.getPrice() << " PLN (" << laptop3.getAmount() << " pieces left)" << endl;
+                    cout << endl;
+                    cout << "Phones:" << endl;
+                    cout << "[7] " << phone1.getProductName() << " - " << phone1.getPrice() << " PLN (" << phone1.getAmount() << " pieces left)" << endl;
+                    cout << "[8] " << phone2.getProductName() << " - " << phone2.getPrice() << " PLN (" << phone2.getAmount() << " pieces left)" << endl;
+                    cout << "[9] " << phone3.getProductName() << " - " << phone3.getPrice() << " PLN (" << phone3.getAmount() << " pieces left)" << endl;
+                    cout << "--------------------------------------------------" << endl;
+
+                    cout << "What do you want to do?" << endl;
+                    cout << "1) Add a product to your shopping cart" << endl;
+                    cout << "2) Show product details" << endl;
+                    cout << "3) Exit list of products" << endl;
+                    cin >> userChoice;
+                    userChoice = userChoiceVerify(userChoice, { 1, 2, 3 }, false);
+
+                    if (userChoice == 1) {
+                        if (userAccount != -1) {
+                            cout << "Choose the product you want to add to your shopping cart: ";
+                            cin >> userChoice;
+                            userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4, 5, 6, 7 ,8, 9 }, false);
+                            system("cls");
+                            switch (userChoice) {
+                            case 1:
+                                customerList[userAccount].addToCart(pc1);
+                                break;
+                            case 2:
+                                customerList[userAccount].addToCart(pc2);
+                                break;
+                            case 3:
+                                customerList[userAccount].addToCart(pc3);
+                                break;
+                            case 4:
+                                customerList[userAccount].addToCart(laptop1);
+                                break;
+                            case 5:
+                                customerList[userAccount].addToCart(laptop2);
+                                break;
+                            case 6:
+                                customerList[userAccount].addToCart(laptop3);
+                                break;
+                            case 7:
+                                customerList[userAccount].addToCart(phone1);
+                                break;
+                            case 8:
+                                customerList[userAccount].addToCart(phone2);
+                                break;
+                            case 9:
+                                customerList[userAccount].addToCart(phone3);
+                                break;
+                            }
+                            cout << "Product has been added to your cart" << endl;
+                            cout << endl;
+                            userChoice = 0;
+                        } else {
+                            system("cls");
+                            cout << "Log in to add products to shopping cart!" << endl;
+                            cout << endl;
+                            userChoice = 0;
+                        }
+                    }
+
+                    if (userChoice == 2) {
+                        cout << "Choose the product you want to inspect: ";
+                        cin >> userChoice;
+                        userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4, 5, 6, 7 ,8, 9 }, false);
+                        system("cls");
+                        switch (userChoice) {
+                        case 1:
+                            cout << pc1.getProductInfo() << endl;
+                            cout << pc1.getPcSpec() << endl;
+                            break;
+                        case 2:
+                            cout << pc2.getProductInfo() << endl;
+                            cout << pc2.getPcSpec() << endl;
+                            break;
+                        case 3:
+                            cout << pc3.getProductInfo() << endl;
+                            cout << pc3.getPcSpec() << endl;
+                            break;
+                        case 4:
+                            cout << laptop1.getProductInfo() << endl;
+                            cout << laptop1.getLaptopSpec() << endl;
+                            break;
+                        case 5:
+                            cout << laptop2.getProductInfo() << endl;
+                            cout << laptop2.getLaptopSpec() << endl;
+                            break;
+                        case 6:
+                            cout << laptop3.getProductInfo() << endl;
+                            cout << laptop3.getLaptopSpec() << endl;
+                            break;
+                        case 7:
+                            cout << phone1.getProductInfo() << endl;
+                            cout << phone1.getPhoneSpec() << endl;
+                            break;
+                        case 8:
+                            cout << phone2.getProductInfo() << endl;
+                            cout << phone2.getPhoneSpec() << endl;
+                            break;
+                        case 9:
+                            cout << phone3.getProductInfo() << endl;
+                            cout << phone3.getPhoneSpec() << endl;
+                            break;
+                        }
+                        userChoice = 0;
+                    }
+
+                    if (userChoice == 3) {
+                        productsListActive = false;
+                        system("cls");
+                        userChoice = 0;
+                    }
+                }
+            }
+            
+            // User logged off options
+
+            if(userChoice == 2 && userAccount == -1) {
+                bool loggedIn = false;
+                int userAccountIndex = 0;
+                string userLogin;
+                string userPass;
+                
+                cout << "Enter your name: ";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                getline(cin, userLogin);
+
+                cout << "Enter your password: ";
+                cin >> userPass;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                system("cls");
+
+                for (int i = 0; i < customerList.size(); i++) {
+                    if (userLogin == customerList[i].getUserName() && userPass == customerList[i].getUserPassword()) {
+                        loggedIn = true;
+                    }
+                    userAccountIndex = i;
+                }
+
+                if (!loggedIn) {
+                    cout << "Your name or password didn't match. Try again." << endl;
+                    cout << endl;
+                }
+
+                if (loggedIn) {
+                    userAccount = userAccountIndex;
+                    cout << "You're logged in as " << userLogin << endl;
+                    cout << endl;
+                }
+                userChoice = 0;
+            }
+
+            if (userChoice == 3 && userAccount == -1) {
+                string userName;
+                string userPassword;
+                string userMail;
+                string userAdress;
+
+                cout << "Enter your full name: ";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                getline(cin, userName);
+
+                cout << "Enter your account password: ";
+                cin >> userPassword;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                cout << "Enter your mail: ";
+                cin >> userMail;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                cout << "Enter your adress: ";
+                cin >> userAdress;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                system("cls");
+
+                customerList.emplace_back(userName, userPassword, userMail, userAdress);
+                cout << "Your account has been created!" << endl;
+                cout << endl;
+            }
+
+            if (userChoice == 4 && userAccount == -1) {
+                isTheProgramWorking = false;
+            }
+
+            // User logged in options
+
+            if (userChoice == 2 && userAccount != -1) {
+                cout << customerList[userAccount].getUserData() << endl;
+                cout << endl;
+            }
+
+            if (userChoice == 3 && userAccount != -1) {
+                userShoppingCartActive = true;
+                while (userShoppingCartActive) {
+                    cout << customerList[userAccount].displayCart() << endl;
+                    cout << endl;
+                    cout << "What would you like to do:" << endl;
+                    cout << "1) Remove product from cart" << endl;
+                    cout << "2) Remove all products from cart" << endl;
+                    cout << "3) Buy products" << endl;
+                    cout << "4) Exit shopping cart" << endl;
+                    cin >> userChoice;
+                    userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4 }, false);
+
+                    if (userChoice == 1) {
+                        cout << "Choose the number of product you would like to remove: ";
+                        cin >> userChoice;
+
+                        vector <int> rangeOfItemsInCart;
+                        for (int i = 1; i < customerList[userAccount].getNumberOfItemsInCart(); i++) {
+                            rangeOfItemsInCart.push_back(i);
+                        }
+
+                        userChoice = userChoiceVerify(userChoice, rangeOfItemsInCart, false);
+                        customerList[userAccount].removeProductFromCart(userChoice - 1);
+                        system("cls");
+                        cout << "Product has been removed" << endl;
+                        cout << endl;
+                        userChoice = 0;
+                    }
+
+                    if (userChoice == 2) {
+                        customerList[userAccount].clearCart();
+                        system("cls");
+                        cout << "All products have been removed from your shopping cart." << endl;
+                        cout << endl;
+                    }
+
+                    if (userChoice == 3) {
+                        system("cls");
+                        if (customerList[userAccount].buyProducts()) {
+                            cout << "Products bought" << endl;
+                        } else {
+                            cout << "Insufficient funds!" << endl;
+                        }
+                        cout << endl;
+                    }
+
+                    if (userChoice == 4) {
+                        system("cls");
+                        userShoppingCartActive = false;
+                        userChoice = 0;
+                    }
+                }
+            }
+
+            if (userChoice == 4 && userAccount != -1) {
+                userBalanceActive = true;
+                while (userBalanceActive) {
+                    cout << customerList[userAccount].showBalance() << endl;
+                    cout << endl;
+                    cout << "What would you like to do:" << endl;
+                    cout << "1) Deposit money into my account" << endl;
+                    cout << "2) Withdraw money from my account" << endl;
+                    cout << "3) Exit balance view" << endl;
+                    cin >> userChoice;
+                    userChoice = userChoiceVerify(userChoice, { 1, 2, 3 }, false);
+
+                    if (userChoice == 1) {
+                        int userAmount;
+                        cout << "Enter the amount of money you want to deposit:";
+                        cin >> userAmount;
+
+                        while (userAmount < 0) {
+                            cout << "Number should be greater than 0. Insert the number again:";
+                            cin >> userAmount;
+                        }
+
+                        system("cls");
+
+                        cout << customerList[userAccount].deposit(userAmount) << endl;
+                        cout << endl;
+                    }
+
+                    if (userChoice == 2) {
+                        int userAmount;
+                        cout << "Enter the amount of money you want to withdraw:";
+                        cin >> userAmount;
+
+                        while (userAmount < 0) {
+                            cout << "Number should be greater than 0. Insert the number again:";
+                            cin >> userAmount;
+                        }
+
+                        system("cls");
+
+                        cout << customerList[userAccount].withdraw(userAmount) << endl;
+                        cout << endl;
+                    }
+
+                    if (userChoice == 3) {
+                        system("cls");
+                        userBalanceActive = false;
+                        userChoice = 0;
+                    }
+                }
+            }
+
+            if (userChoice == 5 && userAccount != -1) {
+                string previousUserPassword;
+                cout << "Enter your previous password: ";
+                cin >> previousUserPassword;
+                customerList[userAccount].changePassword(previousUserPassword);
+                cout << endl;
+            }
+
+            if (userChoice == 6 && userAccount != -1) {
+                userAccount = -1;
+                cout << "You are now logged off" << endl;
+                cout << endl;
+            }
+
+            if (userChoice == 7 && userAccount != -1) {
+                isTheProgramWorking = false;
+            }
+        }
+    }
+
+    if (userChoice == 2) {
+            isTheProgramWorking = false;
+    }
 
     return 0;
 }
@@ -523,8 +922,8 @@ void testProductsClass() {
         assert(productTest.getAmount() == 60);
         assert(productTest.getProductInfo() == "Product name: Logitech Keyboard\nCost: 120 PLN\nAmount of products: 60\n");
     }
-    cout << "Product class valid" << endl;
-    cout << endl;
+    //cout << "Product class valid" << endl;
+    //cout << endl;
 }
 
 void testComputerClass() {
@@ -537,8 +936,8 @@ void testComputerClass() {
         assert(computerTest.getProductInfo() == "Product name: HP Pro 290 G9 SFF\nCost: 2899 PLN\nAmount of products: 200\n");
         assert(computerTest.getPcSpec() == "Computer specifications: \n* System - Windows 11 Pro\n* Cpu - Intel Core i5-13500\n* Gpu - Intel UHD Graphics 770\n* Memory - 16 GB (DIMM DDR4, 3200 MHz)\n* Disk - 512 GB SSD PCIe\n");
     }
-    cout << "Computer class valid" << endl;
-    cout << endl;
+    //cout << "Computer class valid" << endl;
+    //cout << endl;
 }
 
 void testLaptopClass() {
@@ -551,8 +950,8 @@ void testLaptopClass() {
         assert(laptopTest.getProductInfo() == "Product name: Lenovo ThinkPad E16\nCost: 4200 PLN\nAmount of products: 1\n");
         assert(laptopTest.getLaptopSpec() == "Computer specifications: \n* System - Windows 11 Pro\n* Cpu - Intel Core i5-1335U\n* Gpu - Intel Iris Xe Graphics\n* Memory - 16 GB (DDR4, 3200 MHz)\n* Disk - 512 GB SSD M.2 PCIe\n* Screen - 16\" Matte, LED, IPS\n");
     }
-    cout << "Laptop class valid" << endl;
-    cout << endl;
+    //cout << "Laptop class valid" << endl;
+    //cout << endl;
 }
 
 void testPhoneClass() {
@@ -565,8 +964,8 @@ void testPhoneClass() {
         assert(phoneTest.getProductInfo() == "Product name: Samsung Galaxy S23\nCost: 3799 PLN\nAmount of products: 73\n");
         assert(phoneTest.getPhoneSpec() == "Phone specifications: \n* System - Android 13\n* Cpu - Qualcomm Snapdragon 8 gen 2\n* Screen - 6.1\"\n* RAM - 256 GB\n* Built-in memory - 256GB\n* Battery capacity - 3900 mAh\n");
     }
-    cout << "Phone class valid" << endl;
-    cout << endl;
+    //cout << "Phone class valid" << endl;
+    //cout << endl;
 }
 
 void testEmployeeClass() {
@@ -586,8 +985,8 @@ void testEmployeeClass() {
         employeeTest.increaseAmountOfDaysOff(25);
         assert(employeeTest.getEmployeeData() == "Employee 1 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 25 days\n");
     }
-    cout << "Employee class valid" << endl;
-    cout << endl;
+    //cout << "Employee class valid" << endl;
+    //cout << endl;
 }
 
 void testTaskBoardClass() {
@@ -608,8 +1007,8 @@ void testTaskBoardClass() {
         tasksByPriority = taskBoardTest.displayTasksByPriority();
         assert(tasksByPriority == "Tasks sorted by priority:\nPriority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nPriority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
     }
-    cout << "TaskBoard class valid" << endl;
-    cout << endl;
+    //cout << "TaskBoard class valid" << endl;
+    //cout << endl;
 }
 
 void testShoppingCart() {
@@ -629,8 +1028,8 @@ void testShoppingCart() {
         cartTest.removeProduct(0);
         assert(abs(cartTest.getCartValue() - 49.99) < 0.01);
     }
-    cout << "ShoppingCart class valid" << endl;
-    cout << endl;
+    //cout << "ShoppingCart class valid" << endl;
+    //cout << endl;
 }
 
 void testUserBalance() {
@@ -647,15 +1046,15 @@ void testUserBalance() {
 
         assert(balanceTest.buy(5000) == "Insufficient funds to buy products!\n");
     }
-    cout << "UserBalance class valid" << endl;
-    cout << endl;
+    //cout << "UserBalance class valid" << endl;
+    //cout << endl;
 }
 
 void testCustomerClass() {
     {
         Customer customerTest("John Doe", "password123", "john@example.com", "123 Main Street");
 
-        assert(customerTest.getUserData() == "User 1 data: \nName: John Doe\nEmail: john@example.com\nAdress: 123 Main Street\n");
+        assert(customerTest.getUserData() == "User data: \nName: John Doe\nEmail: john@example.com\nAdress: 123 Main Street\n");
 
         Products product1("Keyboard", "Logitech", "None", "None", 120, 1);
         Products product2("Mouse", "Logitech", "None", "None", 50, 1);
@@ -681,6 +1080,6 @@ void testCustomerClass() {
         customerTest.removeProductFromCart(0);
         assert(customerTest.displayCart() == "Shopping Cart:\nNo products in shopping cart\nFinal price: 0 PLN\n");
     }
-    cout << "Customer class valid" << endl;
-    cout << endl;
+    //cout << "Customer class valid" << endl;
+    //cout << endl;
 }
