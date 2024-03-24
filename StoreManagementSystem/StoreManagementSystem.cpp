@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <vector>
+#include <cmath>
 #include <algorithm>
 #include <sstream>
 #include <cassert>
@@ -146,6 +147,10 @@ private:
     string jobPosition;
     string email;
 public:
+    string getBasicData() {
+        return name + " " + surname + " - " + jobPosition;
+    }
+
     string getEmployeeData() {
         stringstream ss;
         ss << "Employee " << id << " data:" << endl;
@@ -158,7 +163,7 @@ public:
 
     string getEmployeeSlary() {
         stringstream ss;
-        ss << "Employee " << id << " salary: " << salary << " PLN" << endl;
+        ss << "Employee salary: " << salary << " PLN" << endl;
         return ss.str();
     }
 
@@ -166,32 +171,34 @@ public:
         salary = _salary;
     }
 
-    void decreaseAmountOfDaysOff(int _amount) {
-        if (_amount > 0 && amountOfDaysOff - _amount > 0) {
+    bool decreaseAmountOfDaysOff(int _amount) {
+        if (_amount > 0 && amountOfDaysOff - _amount >= 0) {
             amountOfDaysOff -= _amount;
+            return true;
         }
-        else {
-            cout << "Wrong number" << endl;
-        }
+        cout << "Wrong number" << endl;
+        return false;
     }
 
-    void increaseAmountOfDaysOff(int _amount) {
+    bool increaseAmountOfDaysOff(int _amount) {
         if (_amount > 0) {
-            amountOfDaysOff = _amount;
+            amountOfDaysOff += _amount;
+            return true;
         }
-        else {
-            cout << "Number needs to be grater than 0" << endl;
-        }
+        cout << "Number needs to be grater than 0" << endl;
+        return false;
     }
 
     Employee(string _name, string _surname, string _jobPosition, string _email, float _salary) : name(_name), surname(_surname), jobPosition(_jobPosition), email(_email), salary(_salary) {
-        id = ++numberOfEmployees;
+        id = numberOfEmployees++;
     }
 };
 
 int Employee::numberOfEmployees = 0;
 
 struct Task {
+    static int nextId;
+    int id;
     string description;
     string assignedEmployee;
     int priority;
@@ -206,23 +213,36 @@ struct Task {
             _priority = 1;
         }
         priority = _priority;
+        id = nextId++;
     }
 };
+
+int Task::nextId = 1;
 
 class TaskBoard {
 private:
     vector<Task> employeeTasks;
-
 public:
+    vector<int> getTasksIds() {
+        vector<int> currentTaskIds;
+        for (auto task : employeeTasks) {
+            currentTaskIds.push_back(task.id);
+        }
+        return currentTaskIds;
+    }
+
     void addTask(string _desc, string _assignedEmp, int _priority, int _time) {
         employeeTasks.emplace_back(_desc, _assignedEmp, _priority, _time);
     }
 
-    void removeTask(int index) {
-        if (index >= 0 && index < employeeTasks.size()) {
-            employeeTasks.erase(employeeTasks.begin() + index);
-        } else {
-            cout << "Invalid task index." << endl;
+    void removeTask(int taskId) {
+        auto taskToDelete = remove_if(employeeTasks.begin(), employeeTasks.end(),
+            [taskId](const Task& task) {
+                return task.id == taskId;
+            });
+        
+        if (taskToDelete != employeeTasks.end()) {
+            employeeTasks.erase(taskToDelete, employeeTasks.end());
         }
     }
 
@@ -232,9 +252,8 @@ public:
         });
 
         stringstream ss;
-        ss << "Tasks sorted by priority:" << endl;
         for (auto task : employeeTasks) {
-            ss << "Priority: " << task.priority << ", Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Time left: " << task.timeLeft << " days" << endl;
+            ss << "ID: " << task.id << ", Priority: " << task.priority << ", Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Time left: " << task.timeLeft << " days" << endl;
         }
         return ss.str();
     }
@@ -245,9 +264,8 @@ public:
         });
 
         stringstream ss;
-        ss << "Tasks sorted by time left:" << endl;
         for (auto& task : employeeTasks) {
-            ss << "Time left: " << task.timeLeft << " days, Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Priority: " << task.priority << endl;
+            ss << "ID: " << task.id << ", Time left: " << task.timeLeft << " days, Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Priority: " << task.priority << endl;
         }
         return ss.str();
     }
@@ -523,10 +541,10 @@ int main()
     Employee employee2("Alice", "Smith", "Cashier", "alice123@gmail.com", 4200);
     Employee employee3("Bob", "Johnson", "Technician", "johnsonb@gmail.com", 6130);
 
-    TaskBoard tb1;
-    tb1.addTask("Organize products on shelves", "Alice Smith", 2, 6);
-    tb1.addTask("Fix broken piece of technology", "Bob Johnson", 0, 2);
-    tb1.addTask("Restock products", "John Doe", 4, 4);
+    TaskBoard companyTaskBoard;
+    companyTaskBoard.addTask("Organize products on shelves", "Alice Smith", 2, 6);
+    companyTaskBoard.addTask("Fix broken piece of technology", "Bob Johnson", 0, 2);
+    companyTaskBoard.addTask("Restock products", "John Doe", 4, 4);
 
     vector <Customer> customerList;
     customerList.emplace_back("Michael Wilson", "password123", "john@gmail.com", "123 Main St");
@@ -534,15 +552,19 @@ int main()
 
     bool isTheProgramWorking = true;
     int userChoice = 0;
+    int previousUserChoice = 0;
 
     int userAccount = -1;
     bool productsListActive = false;
     bool userBalanceActive = false;
     bool userShoppingCartActive = false;
 
-    Employee* currentEmployee;
+    Employee* choosenEmployee = nullptr;
+    bool employeeListActive = false;
+    bool taskBoardActive = false;
+    bool currentTaskBoardViewByPriority = true;
 
-    cout << "Hello! Choose your role: (1) Customer, (2) Employee" << endl;
+    cout << "Hello! Choose application interface: (1) Customer interface, (2) Manager interface" << endl;
     cout << "Your choice: ";
     cin >> userChoice;
     userChoice = userChoiceVerify(userChoice, { 1, 2 });
@@ -905,7 +927,367 @@ int main()
     }
 
     if (userChoice == 2) {
-            isTheProgramWorking = false;
+        while (isTheProgramWorking) {
+            cout << "Welcome into manager interface. Choose what would you like to do:" << endl;
+            cout << "1) Show list of employees" << endl;
+            cout << "2) Show task board" << endl;
+            cout << "3) Show list of products" << endl;
+            cout << "4) Exit" << endl;
+            cin >> userChoice;
+            userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4 });
+
+            if (userChoice == 1) {
+                employeeListActive = true;
+                while (employeeListActive) {
+                    cout << "<List of employees>" << endl;
+                    cout << "[1] " << employee1.getBasicData() << endl;
+                    cout << "[2] " << employee2.getBasicData() << endl;
+                    cout << "[3] " << employee3.getBasicData() << endl;
+                    cout << endl;
+                    cout << "What would you like to do?" << endl;
+                    cout << "1) Show employee details" << endl;
+                    cout << "2) Change employee salary" << endl;
+                    cout << "3) Change number of employee days off" << endl;
+                    cout << "4) Exit" << endl;
+                    cin >> userChoice;
+                    userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4 }, false);
+                    previousUserChoice = userChoice;
+
+                    if (userChoice == 1 || userChoice == 2 || userChoice == 3) {
+                        cout << "Choose the employee id: ";
+                        cin >> userChoice;
+                        userChoice = userChoiceVerify(userChoice, { 1, 2, 3 });
+                        switch (userChoice) {
+                        case 1:
+                            choosenEmployee = &employee1;
+                            break;
+                        case 2:
+                            choosenEmployee = &employee2;
+                            break;
+                        case 3:
+                            choosenEmployee = &employee3;
+                            break;
+                        }
+                        userChoice = previousUserChoice;
+                    }
+
+                    if (userChoice == 1) {
+                        system("cls");
+                        cout << choosenEmployee->getEmployeeData();
+                        cout << choosenEmployee->getEmployeeSlary() << endl;
+                        cout << endl;
+                        userChoice = 0;
+                    }
+
+                    if (userChoice == 2) {
+                        int amount;
+                        cout << "Insert the amount: ";
+                        cin >> amount;
+
+                        while (amount < 0) {
+                            cout << "Number should be greater then 0. Insert the number again: ";
+                            cin >> amount;
+                        }
+
+                        system("cls");
+                        choosenEmployee->changeEmployeeSalary(amount);
+                        userChoice = 0;
+                    }
+
+                    if (userChoice == 3) {
+                        int amount;
+                        cout << "Insert the amount of days you want to change (negative numbers decreases / positive numbers increases): ";
+                        cin >> amount;
+                        system("cls");
+
+                        if (amount > 0) {
+                            if (choosenEmployee->increaseAmountOfDaysOff(amount)) {
+                                cout << "Number of employee days off has been increased by " << amount << " days." << endl;
+                            }
+                            cout << endl;
+                        }
+
+                        if (amount < 0) {
+                            amount *= -1;
+                            if (choosenEmployee->decreaseAmountOfDaysOff(amount)) {
+                                cout << "Number of employee days off has been decreased by " << amount << " days." << endl;
+                            }
+                            cout << endl;
+                        }
+                        
+                        userChoice = 0;
+                    }
+
+                    if (userChoice == 4) {
+                        userChoice = 0;
+                        employeeListActive = false;
+                        system("cls");
+                    }
+                }
+            }
+
+            if (userChoice == 2) {
+                taskBoardActive = true;
+                while (taskBoardActive) {
+                    if (currentTaskBoardViewByPriority) {
+                        cout << "<Task Board - displayed by priority>" << endl;
+                        cout << companyTaskBoard.displayTasksByPriority() << endl;
+                    }
+
+                    if (!currentTaskBoardViewByPriority) {
+                        cout << "<Task Board - displayed by time left>" << endl;
+                        cout << companyTaskBoard.displayTasksByTimeLeft() << endl;
+                    }
+
+                    cout << endl;
+                    cout << "What would you like to do?" << endl;
+                    cout << "1) Add task to the board" << endl;
+                    cout << "2) Remove task from the board" << endl;
+
+                    if (currentTaskBoardViewByPriority) {
+                        cout << "3) Display task board by time left" << endl;
+                    }
+
+                    if (!currentTaskBoardViewByPriority) {
+                        cout << "3) Display task board by priority" << endl;
+                    }
+                    
+                    cout << "4) Exit" << endl;
+                    cin >> userChoice;
+                    userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4 }, false);
+
+                    if (userChoice == 1) {
+                        string newTaskDesc;
+                        string newTaskAssignedEmployee;
+                        int newTaskPriority;
+                        int newTaskTime;
+
+                        cout << "Enter task description: ";
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        getline(cin, newTaskDesc);
+
+                        cout << "Enter name of the employee you want to assign to this task: ";
+                        getline(cin, newTaskAssignedEmployee);
+
+                        cout << "Enter priority of this task (1 / 2 / 3): ";
+                        cin >> newTaskPriority;
+
+
+                        cout << "Enter how many days are left until the end of the task: ";
+                        cin >> newTaskTime;
+                        
+                        companyTaskBoard.addTask(newTaskDesc, newTaskAssignedEmployee, newTaskPriority, newTaskTime);
+                        system("cls");
+                        cout << "Task has been added" << endl;
+                        cout << endl;
+                        userChoice = 0;
+                    }
+
+                    if (userChoice == 2) {
+                        cout << "Choose the id of the task you want to remove: ";
+                        cin >> userChoice;
+                        userChoice = userChoiceVerify(userChoice, companyTaskBoard.getTasksIds());
+
+                        companyTaskBoard.removeTask(userChoice);
+                        cout << "Task has been deleted" << endl;
+                        cout << endl;
+                        userChoice = 0;
+                    }
+
+                    if (userChoice == 3) {
+                        currentTaskBoardViewByPriority = !currentTaskBoardViewByPriority;
+                        system("cls");
+                    }
+
+                    if (userChoice == 4) {
+                        taskBoardActive = false;
+                        userChoice = 0;
+                        system("cls");
+                    }
+                }
+            }
+
+            if (userChoice == 3) {
+                productsListActive = true;
+                while (productsListActive) {
+                    cout << "<Products list>" << endl;
+                    cout << endl;
+                    cout << "Computers:" << endl;
+                    cout << "[1] " << pc1.getProductName() << " - " << pc1.getPrice() << " PLN (" << pc1.getAmount() << " pieces left)" << endl;
+                    cout << "[2] " << pc2.getProductName() << " - " << pc2.getPrice() << " PLN (" << pc2.getAmount() << " pieces left)" << endl;
+                    cout << "[3] " << pc3.getProductName() << " - " << pc3.getPrice() << " PLN (" << pc3.getAmount() << " pieces left)" << endl;
+                    cout << endl;
+                    cout << "Laptops:" << endl;
+                    cout << "[4] " << laptop1.getProductName() << " - " << laptop1.getPrice() << " PLN (" << laptop1.getAmount() << " pieces left)" << endl;
+                    cout << "[5] " << laptop2.getProductName() << " - " << laptop2.getPrice() << " PLN (" << laptop2.getAmount() << " pieces left)" << endl;
+                    cout << "[6] " << laptop3.getProductName() << " - " << laptop3.getPrice() << " PLN (" << laptop3.getAmount() << " pieces left)" << endl;
+                    cout << endl;
+                    cout << "Phones:" << endl;
+                    cout << "[7] " << phone1.getProductName() << " - " << phone1.getPrice() << " PLN (" << phone1.getAmount() << " pieces left)" << endl;
+                    cout << "[8] " << phone2.getProductName() << " - " << phone2.getPrice() << " PLN (" << phone2.getAmount() << " pieces left)" << endl;
+                    cout << "[9] " << phone3.getProductName() << " - " << phone3.getPrice() << " PLN (" << phone3.getAmount() << " pieces left)" << endl;
+                    cout << "--------------------------------------------------" << endl;
+
+                    cout << "What would you like to do?" << endl;
+                    cout << "1) Change product amount" << endl;
+                    cout << "2) Change product specification" << endl;
+                    cout << "3) Exit" << endl;
+                    cin >> userChoice;
+                    userChoice = userChoiceVerify(userChoice, { 1, 2 ,3 }, false);
+                    previousUserChoice = userChoice;
+
+                    if (userChoice == 3) {
+                        system("cls");
+                        productsListActive = false;
+                        userChoice = 0;
+                    }
+
+                    if (previousUserChoice == 1 || previousUserChoice == 2) {
+                        cout << "Choose the product: ";
+                        cin >> userChoice;
+                        userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+                    }
+
+                    if (previousUserChoice == 2) {
+                        string newGpu;
+                        string newMemory;
+                        string newDisk;
+                        string newScreenType;
+                        float newScreenSize;
+                        int newRamSize;
+                        int newMemorySize;
+                        int newBatterySize;
+
+                        if (userChoice >= 1 && userChoice <= 3) {
+                            cout << "Insert computer GPU: ";
+                            cin >> newGpu;
+                            cout << "Insert computer memory: ";
+                            cin >> newMemory;
+                            cout << "Insert computer disk: ";
+                            cin >> newDisk;
+                        }
+
+                        if (userChoice >= 4 && userChoice <= 6) {
+                            cout << "Insert laptop GPU: ";
+                            cin >> newGpu;
+                            cout << "Insert laptop memory: ";
+                            cin >> newMemory;
+                            cout << "Insert laptop disk: ";
+                            cin >> newDisk;
+                            cout << "Insert laptop screen type: ";
+                            cin >> newScreenType;
+                            cout << "Insert laptop screen size: ";
+                            cin >> newScreenSize;
+                        }
+
+                        if (userChoice >= 7 && userChoice <= 9) {
+                            cout << "Insert phone screen size: ";
+                            cin >> newScreenSize;
+                            cout << "Insert phone RAM size: ";
+                            cin >> newRamSize;
+                            cout << "Insert phone memory size: ";
+                            cin >> newMemorySize;
+                            cout << "Insert phone battery capacity: ";
+                            cin >> newBatterySize;
+                        }
+
+                        system("cls");
+                        cout << "Product specifications updated" << endl;
+                        cout << endl;
+
+                        switch (userChoice) {
+                        case 1:
+                            pc1.setPcSpec(newGpu, newMemory, newDisk);
+                            cout << pc1.getPcSpec() << endl;
+                            break;
+                        case 2:
+                            pc2.setPcSpec(newGpu, newMemory, newDisk);
+                            cout << pc2.getPcSpec() << endl;
+                            break;
+                        case 3:
+                            pc3.setPcSpec(newGpu, newMemory, newDisk);
+                            cout << pc3.getPcSpec() << endl;
+                            break;
+                        case 4:
+                            laptop1.setLaptopSpec(newGpu, newMemory, newDisk, newScreenType, newScreenSize);
+                            cout << laptop1.getLaptopSpec() << endl;
+                            break;
+                        case 5:
+                            laptop2.setLaptopSpec(newGpu, newMemory, newDisk, newScreenType, newScreenSize);
+                            cout << laptop2.getLaptopSpec() << endl;
+                            break;
+                        case 6:
+                            laptop3.setLaptopSpec(newGpu, newMemory, newDisk, newScreenType, newScreenSize);
+                            cout << laptop3.getLaptopSpec() << endl;
+                            break;
+                        case 7:
+                            phone1.setPhoneSpec(newScreenSize, newRamSize, newMemorySize, newBatterySize);
+                            cout << phone1.getPhoneSpec() << endl;
+                            break;
+                        case 8:
+                            phone2.setPhoneSpec(newScreenSize, newRamSize, newMemorySize, newBatterySize);
+                            cout << phone2.getPhoneSpec() << endl;
+                            break;
+                        case 9:
+                            phone3.setPhoneSpec(newScreenSize, newRamSize, newMemorySize, newBatterySize);
+                            cout << phone3.getPhoneSpec() << endl;
+                            break;
+                        }
+                        userChoice = 0;
+                    }
+
+                    if (previousUserChoice == 1) {
+                        int amount = 0;
+                        cout << "Insert the new amount of product: ";
+                        cin >> amount;
+
+                        while (amount < 0) {
+                            cout << "Number should be grater or equal to 0. Insert the amount again: ";
+                            cin >> amount;
+                        }
+
+                        switch (userChoice) {
+                        case 1:
+                            pc1.updateAmount(amount);
+                            break;
+                        case 2:
+                            pc2.updateAmount(amount);
+                            break;
+                        case 3:
+                            pc3.updateAmount(amount);
+                            break;
+                        case 4:
+                            laptop1.updateAmount(amount);
+                            break;
+                        case 5:
+                            laptop2.updateAmount(amount);
+                            break;
+                        case 6:
+                            laptop3.updateAmount(amount);
+                            break;
+                        case 7:
+                            phone1.updateAmount(amount);
+                            break;
+                        case 8:
+                            phone2.updateAmount(amount);
+                            break;
+                        case 9:
+                            phone3.updateAmount(amount);
+                            break;
+                        }
+                        
+                        system("cls");
+                        cout << "Product amount updated" << endl;
+                        cout << endl;
+                        userChoice = 0;
+                    }
+                }
+            }
+
+            if (userChoice == 4) {
+                isTheProgramWorking = false;
+            }
+        }
     }
 
     return 0;
@@ -972,18 +1354,18 @@ void testEmployeeClass() {
     {
         Employee employeeTest("John", "Doe", "Manager", "johndoe@gmail.com", 5000);
         
-        assert(employeeTest.getEmployeeData() == "Employee 1 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 20 days\n");
+        assert(employeeTest.getEmployeeData() == "Employee 0 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 20 days\n");
         
-        assert(employeeTest.getEmployeeSlary() == "Employee 1 salary: 5000 PLN\n");
+        assert(employeeTest.getEmployeeSlary() == "Employee salary: 5000 PLN\n");
         
         employeeTest.changeEmployeeSalary(6000);
-        assert(employeeTest.getEmployeeSlary() == "Employee 1 salary: 6000 PLN\n");
+        assert(employeeTest.getEmployeeSlary() == "Employee salary: 6000 PLN\n");
 
         employeeTest.decreaseAmountOfDaysOff(5);
-        assert(employeeTest.getEmployeeData() == "Employee 1 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 15 days\n");
+        assert(employeeTest.getEmployeeData() == "Employee 0 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 15 days\n");
 
-        employeeTest.increaseAmountOfDaysOff(25);
-        assert(employeeTest.getEmployeeData() == "Employee 1 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 25 days\n");
+        employeeTest.increaseAmountOfDaysOff(10);
+        assert(employeeTest.getEmployeeData() == "Employee 0 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 25 days\n");
     }
     //cout << "Employee class valid" << endl;
     //cout << endl;
@@ -998,14 +1380,16 @@ void testTaskBoardClass() {
         taskBoardTest.addTask("Organize documents", "Alice Johnson", 1, 7);
 
         string tasksByPriority = taskBoardTest.displayTasksByPriority();
-        assert(tasksByPriority == "Tasks sorted by priority:\nPriority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nPriority: 2, Description: Fix PC, Assigned to: John Doe, Time left: 5 days\nPriority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
+        assert(tasksByPriority == "ID: 2, Priority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nID: 1, Priority: 2, Description: Fix PC, Assigned to: John Doe, Time left: 5 days\nID: 3, Priority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
 
         string tasksByTimeLeft = taskBoardTest.displayTasksByTimeLeft();
-        assert(tasksByTimeLeft == "Tasks sorted by time left:\nTime left: 3 days, Description: Clean floor, Assigned to: Jane Smith, Priority: 3\nTime left: 5 days, Description: Fix PC, Assigned to: John Doe, Priority: 2\nTime left: 7 days, Description: Organize documents, Assigned to: Alice Johnson, Priority: 1\n");
+        assert(tasksByTimeLeft == "ID: 2, Time left: 3 days, Description: Clean floor, Assigned to: Jane Smith, Priority: 3\nID: 1, Time left: 5 days, Description: Fix PC, Assigned to: John Doe, Priority: 2\nID: 3, Time left: 7 days, Description: Organize documents, Assigned to: Alice Johnson, Priority: 1\n");
 
         taskBoardTest.removeTask(1);
         tasksByPriority = taskBoardTest.displayTasksByPriority();
-        assert(tasksByPriority == "Tasks sorted by priority:\nPriority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nPriority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
+        assert(tasksByPriority == "ID: 2, Priority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nID: 3, Priority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
+
+        Task::nextId = 1;
     }
     //cout << "TaskBoard class valid" << endl;
     //cout << endl;

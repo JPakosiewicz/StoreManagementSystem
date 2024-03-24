@@ -1,13 +1,13 @@
 ﻿  StoreManagementSystem.cpp
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(511,109): warning C4305: "argument": obcięcie z "double" do "float"
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(513,123): warning C4305: "argument": obcięcie z "double" do "float"
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(516,25): warning C4305: "argument": obcięcie z "double" do "float"
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(518,25): warning C4305: "argument": obcięcie z "double" do "float"
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(520,25): warning C4305: "argument": obcięcie z "double" do "float"
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(859,67): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(875,68): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(543,15): warning C4101: "currentEmployee": lokalna zmienna, do której nie istnieje odwołanie
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(960,32): warning C4305: "argument": obcięcie z "double" do "float"
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(1016,66): warning C4305: "argument": obcięcie z "double" do "float"
-C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(1017,68): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(529,109): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(531,123): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(534,25): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(536,25): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(538,25): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(881,67): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(897,68): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(993,63): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(1342,32): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(1400,66): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\kubat\Desktop\StoreManagementSystem\StoreManagementSystem\StoreManagementSystem.cpp(1401,68): warning C4305: "argument": obcięcie z "double" do "float"
   StoreManagementSystem.vcxproj -> C:\Users\kubat\Desktop\StoreManagementSystem\x64\Debug\StoreManagementSystem.exe
