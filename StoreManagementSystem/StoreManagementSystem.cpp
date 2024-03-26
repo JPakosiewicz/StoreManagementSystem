@@ -1,6 +1,5 @@
 ﻿#include <iostream>
 #include <vector>
-#include <cmath>
 #include <algorithm>
 #include <sstream>
 #include <cassert>
@@ -553,6 +552,7 @@ int main()
     bool isTheProgramWorking = true;
     int userChoice = 0;
     int previousUserChoice = 0;
+    vector <Products*> productsReference = { &pc1, &pc2, &pc3, &laptop1, &laptop2, &laptop3, &phone1, &phone2, &phone3 };
 
     int userAccount = -1;
     bool productsListActive = false;
@@ -628,42 +628,14 @@ int main()
                             cin >> userChoice;
                             userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4, 5, 6, 7 ,8, 9 }, false);
                             system("cls");
-                            switch (userChoice) {
-                            case 1:
-                                customerList[userAccount].addToCart(pc1);
-                                break;
-                            case 2:
-                                customerList[userAccount].addToCart(pc2);
-                                break;
-                            case 3:
-                                customerList[userAccount].addToCart(pc3);
-                                break;
-                            case 4:
-                                customerList[userAccount].addToCart(laptop1);
-                                break;
-                            case 5:
-                                customerList[userAccount].addToCart(laptop2);
-                                break;
-                            case 6:
-                                customerList[userAccount].addToCart(laptop3);
-                                break;
-                            case 7:
-                                customerList[userAccount].addToCart(phone1);
-                                break;
-                            case 8:
-                                customerList[userAccount].addToCart(phone2);
-                                break;
-                            case 9:
-                                customerList[userAccount].addToCart(phone3);
-                                break;
-                            }
+
+                            customerList[userAccount].addToCart(*productsReference[userChoice - 1]);
                             cout << "Product has been added to your cart" << endl;
                             cout << endl;
                             userChoice = 0;
                         } else {
                             system("cls");
-                            cout << "Log in to add products to shopping cart!" << endl;
-                            cout << endl;
+                            cout << "Log in to add products to shopping cart!" << endl << endl;
                             userChoice = 0;
                         }
                     }
@@ -747,14 +719,12 @@ int main()
                 }
 
                 if (!loggedIn) {
-                    cout << "Your name or password didn't match. Try again." << endl;
-                    cout << endl;
+                    cout << "Your name or password didn't match. Try again." << endl << endl;
                 }
 
                 if (loggedIn) {
                     userAccount = userAccountIndex;
-                    cout << "You're logged in as " << userLogin << endl;
-                    cout << endl;
+                    cout << "You're logged in as " << userLogin << endl << endl;
                 }
                 userChoice = 0;
             }
@@ -784,8 +754,7 @@ int main()
                 system("cls");
 
                 customerList.emplace_back(userName, userPassword, userMail, userAdress);
-                cout << "Your account has been created!" << endl;
-                cout << endl;
+                cout << "Your account has been created!" << endl << endl;
             }
 
             if (userChoice == 4 && userAccount == -1) {
@@ -795,15 +764,13 @@ int main()
             // User logged in options
 
             if (userChoice == 2 && userAccount != -1) {
-                cout << customerList[userAccount].getUserData() << endl;
-                cout << endl;
+                cout << customerList[userAccount].getUserData() << endl << endl;
             }
 
             if (userChoice == 3 && userAccount != -1) {
                 userShoppingCartActive = true;
                 while (userShoppingCartActive) {
-                    cout << customerList[userAccount].displayCart() << endl;
-                    cout << endl;
+                    cout << customerList[userAccount].displayCart() << endl << endl;
                     cout << "What would you like to do:" << endl;
                     cout << "1) Remove product from cart" << endl;
                     cout << "2) Remove all products from cart" << endl;
@@ -824,26 +791,23 @@ int main()
                         userChoice = userChoiceVerify(userChoice, rangeOfItemsInCart, false);
                         customerList[userAccount].removeProductFromCart(userChoice - 1);
                         system("cls");
-                        cout << "Product has been removed" << endl;
-                        cout << endl;
+                        cout << "Product has been removed" << endl << endl;
                         userChoice = 0;
                     }
 
                     if (userChoice == 2) {
                         customerList[userAccount].clearCart();
                         system("cls");
-                        cout << "All products have been removed from your shopping cart." << endl;
-                        cout << endl;
+                        cout << "All products have been removed from your shopping cart." << endl << endl;
                     }
 
                     if (userChoice == 3) {
                         system("cls");
                         if (customerList[userAccount].buyProducts()) {
-                            cout << "Products bought" << endl;
+                            cout << "Products bought" << endl << endl;
                         } else {
-                            cout << "Insufficient funds!" << endl;
+                            cout << "Insufficient funds!" << endl << endl;
                         }
-                        cout << endl;
                     }
 
                     if (userChoice == 4) {
@@ -857,8 +821,7 @@ int main()
             if (userChoice == 4 && userAccount != -1) {
                 userBalanceActive = true;
                 while (userBalanceActive) {
-                    cout << customerList[userAccount].showBalance() << endl;
-                    cout << endl;
+                    cout << customerList[userAccount].showBalance() << endl << endl;
                     cout << "What would you like to do:" << endl;
                     cout << "1) Deposit money into my account" << endl;
                     cout << "2) Withdraw money from my account" << endl;
@@ -878,8 +841,7 @@ int main()
 
                         system("cls");
 
-                        cout << customerList[userAccount].deposit(userAmount) << endl;
-                        cout << endl;
+                        cout << customerList[userAccount].deposit(userAmount) << endl << endl;
                     }
 
                     if (userChoice == 2) {
@@ -894,8 +856,7 @@ int main()
 
                         system("cls");
 
-                        cout << customerList[userAccount].withdraw(userAmount) << endl;
-                        cout << endl;
+                        cout << customerList[userAccount].withdraw(userAmount) << endl << endl;
                     }
 
                     if (userChoice == 3) {
@@ -916,8 +877,7 @@ int main()
 
             if (userChoice == 6 && userAccount != -1) {
                 userAccount = -1;
-                cout << "You are now logged off" << endl;
-                cout << endl;
+                cout << "You are now logged off" << endl << endl;
             }
 
             if (userChoice == 7 && userAccount != -1) {
@@ -974,8 +934,7 @@ int main()
                     if (userChoice == 1) {
                         system("cls");
                         cout << choosenEmployee->getEmployeeData();
-                        cout << choosenEmployee->getEmployeeSlary() << endl;
-                        cout << endl;
+                        cout << choosenEmployee->getEmployeeSlary() << endl << endl;
                         userChoice = 0;
                     }
 
@@ -1002,17 +961,15 @@ int main()
 
                         if (amount > 0) {
                             if (choosenEmployee->increaseAmountOfDaysOff(amount)) {
-                                cout << "Number of employee days off has been increased by " << amount << " days." << endl;
+                                cout << "Number of employee days off has been increased by " << amount << " days." << endl << endl;
                             }
-                            cout << endl;
                         }
 
                         if (amount < 0) {
                             amount *= -1;
                             if (choosenEmployee->decreaseAmountOfDaysOff(amount)) {
-                                cout << "Number of employee days off has been decreased by " << amount << " days." << endl;
+                                cout << "Number of employee days off has been decreased by " << amount << " days." << endl << endl;
                             }
-                            cout << endl;
                         }
                         
                         userChoice = 0;
@@ -1078,8 +1035,7 @@ int main()
                         
                         companyTaskBoard.addTask(newTaskDesc, newTaskAssignedEmployee, newTaskPriority, newTaskTime);
                         system("cls");
-                        cout << "Task has been added" << endl;
-                        cout << endl;
+                        cout << "Task has been added" << endl << endl;
                         userChoice = 0;
                     }
 
@@ -1089,8 +1045,7 @@ int main()
                         userChoice = userChoiceVerify(userChoice, companyTaskBoard.getTasksIds());
 
                         companyTaskBoard.removeTask(userChoice);
-                        cout << "Task has been deleted" << endl;
-                        cout << endl;
+                        cout << "Task has been deleted" << endl << endl;
                         userChoice = 0;
                     }
 
@@ -1192,8 +1147,7 @@ int main()
                         }
 
                         system("cls");
-                        cout << "Product specifications updated" << endl;
-                        cout << endl;
+                        cout << "Product specifications updated" << endl << endl;
 
                         switch (userChoice) {
                         case 1:
@@ -1246,39 +1200,10 @@ int main()
                             cin >> amount;
                         }
 
-                        switch (userChoice) {
-                        case 1:
-                            pc1.updateAmount(amount);
-                            break;
-                        case 2:
-                            pc2.updateAmount(amount);
-                            break;
-                        case 3:
-                            pc3.updateAmount(amount);
-                            break;
-                        case 4:
-                            laptop1.updateAmount(amount);
-                            break;
-                        case 5:
-                            laptop2.updateAmount(amount);
-                            break;
-                        case 6:
-                            laptop3.updateAmount(amount);
-                            break;
-                        case 7:
-                            phone1.updateAmount(amount);
-                            break;
-                        case 8:
-                            phone2.updateAmount(amount);
-                            break;
-                        case 9:
-                            phone3.updateAmount(amount);
-                            break;
-                        }
+                        productsReference[userChoice - 1]->updateAmount(amount);
                         
                         system("cls");
-                        cout << "Product amount updated" << endl;
-                        cout << endl;
+                        cout << "Product amount updated" << endl << endl;
                         userChoice = 0;
                     }
                 }
