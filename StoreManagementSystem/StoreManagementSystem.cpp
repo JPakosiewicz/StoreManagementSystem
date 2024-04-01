@@ -69,6 +69,19 @@ public:
 
 int Products::typesOfProducts = 0;
 
+/*******************************************************
+Class: Computer
+Description: Represents a computer product with additional specifications.
+Fields:
+ * gpu (string) - Stores the GPU information of the computer.
+ * memory (string) - Stores the memory information of the computer.
+ * disk (string) - Stores the disk information of the computer.
+Methods:
+ * setPcSpec(string _gpu, string _memory, string _disk) - Sets the specifications of the computer including GPU, memory, and disk.
+ * getPcSpec() - Retrieves the detailed specifications of the computer including system, CPU, GPU, memory, and disk.
+Constructor:
+ * Computer(string _name, string _brand, string _system, string _cpu, float _price, int _amount)
+*******************************************************/
 class Computer : public Products {
 private:
     string gpu;
