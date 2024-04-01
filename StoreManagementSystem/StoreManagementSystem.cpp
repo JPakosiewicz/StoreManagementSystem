@@ -491,6 +491,35 @@ public:
     UserBalance() : balance(5000) {}
 };
 
+/*******************************************************
+Class: Customer
+Description: Represents a customer with an account for purchasing products.
+Fields:
+ * numberOfUsers (static int) - Static field to keep track of the total number of customers in the system.
+ * id (int) - Unique identifier of the customer.
+ * name (string) - Stores the name of the customer.
+ * password (string) - Stores the password of the customer.
+ * address (string) - Stores the address of the customer.
+ * email (string) - Stores the email address of the customer.
+ * cart (ShoppingCart) - Object representing the shopping cart of the customer.
+ * userBalance (UserBalance) - Object representing the balance of the customer's account.
+Methods:
+ * getUserName() - Retrieves the name of the customer.
+ * getUserPassword() - Retrieves the password of the customer.
+ * getUserData() - Retrieves and displays the basic information of the customer.
+ * changePassword(string previousPassword) - Allows the customer to change their password after verifying their previous password.
+ * addToCart(Products product) - Adds a product to the customer's shopping cart.
+ * clearCart() - Clears all items from the customer's shopping cart.
+ * removeProductFromCart(int index) - Removes a product from the customer's shopping cart based on the specified index.
+ * getNumberOfItemsInCart() - Retrieves the number of items in the customer's shopping cart.
+ * displayCart() - Retrieves and displays the contents of the customer's shopping cart.
+ * showBalance() - Retrieves and displays the current balance of the customer's account.
+ * deposit(float amount) - Deposits the specified amount into the customer's account balance.
+ * withdraw(float amount) - Withdraws the specified amount from the customer's account balance.
+ * buyProducts() - Processes the purchase of items in the customer's shopping cart if sufficient funds are available and clears the cart upon successful purchase.
+Constructor:
+ * Customer(string _name, string _password, string _email, string _address)
+*******************************************************/
 class Customer {
 private:
     static int numberOfUsers;
