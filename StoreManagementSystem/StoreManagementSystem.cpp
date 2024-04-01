@@ -693,6 +693,7 @@ int main()
     testUserBalance();
     testCustomerClass();
 
+    // Creating objects of class Computer and setting their specifications
     Computer pc1("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
     pc1.setPcSpec("Intel UHD Graphics 770", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
     Computer pc2("Nitro", "Acer", "No system", "Intel Core i5-12400F", 2999, 100);
@@ -700,6 +701,7 @@ int main()
     Computer pc3("G4M3R HERO", "X-kom", "Windows 11 Home", "Intel Core i7-14700F", 8700, 50);
     pc3.setPcSpec("NVIDIA GeForce RTX 4070 Super", "32 GB (DIMM DDR5, 6000MHz)", "1000 GB SSD M.2 PCIe 4.0");
 
+    // Creating objects of class Laptop and setting their specifications
     Laptop laptop1("ThinkPad E16", "Lenovo", "Windows 11 Pro", "Intel Core i5-1335U", 4200, 1);
     laptop1.setLaptopSpec("Intel Iris Xe Graphics", "16 GB (DDR4, 3200 MHz)", "512 GB SSD M.2 PCIe", "Matte, LED, IPS", 16);
     Laptop laptop2("Extensa", "Acer", "Windows 11 Home", "Intel Core i5-1235U", 2399, 152);
@@ -707,6 +709,7 @@ int main()
     Laptop laptop3("Bravo 15", "MSI", "No system", "AMD Ryzen 7 7735HS", 4399, 34);
     laptop3.setLaptopSpec("NVIDIA GeForce RTX 4060", "16 GB (DDR5, 4800 MHz)", "1000 GB SSD M.2 PCIe", "Matte, LED, IPS", 15.6);
 
+    // Creating objects of class Phone and setting their specifications
     Phone phone1("Galaxy S23", "Samsung", "Android 13", "Qualcomm Snapdragon 8 gen 2", 3799, 73);
     phone1.setPhoneSpec(6.1, 8, 256, 3900);
     Phone phone2("iPhone 13", "Apple", "iOS 15", "Apple A15 Bionic", 2649, 10);
@@ -714,43 +717,51 @@ int main()
     Phone phone3("Redmi Note 12", "Xiaomi", "Android 13", "Qualcomm Snapdragon 685", 649, 123);
     phone3.setPhoneSpec(6.67, 4, 128, 5000);
 
+    // Creating employees that work in the store
     Employee employee1("John", "Doe", "Manager", "johndoe@gmail.com", 8590);
     Employee employee2("Alice", "Smith", "Cashier", "alice123@gmail.com", 4200);
     Employee employee3("Bob", "Johnson", "Technician", "johnsonb@gmail.com", 6130);
 
+    // Creating company task board and adding tasks to it
     TaskBoard companyTaskBoard;
     companyTaskBoard.addTask("Organize products on shelves", "Alice Smith", 2, 6);
     companyTaskBoard.addTask("Fix broken piece of technology", "Bob Johnson", 0, 2);
     companyTaskBoard.addTask("Restock products", "John Doe", 4, 4);
 
+    // Creating list of customers and creating 2 exemplary customers
     vector <Customer> customerList;
     customerList.emplace_back("Michael Wilson", "password123", "john@gmail.com", "123 Main St");
     customerList.emplace_back("Jennifer Brown", "abc123", "jennifer@gmail.com", "456 Elm St");
 
-    bool isTheProgramWorking = true;
-    int userChoice = 0;
-    int previousUserChoice = 0;
-    vector <Products*> productsReference = { &pc1, &pc2, &pc3, &laptop1, &laptop2, &laptop3, &phone1, &phone2, &phone3 };
+    // Initializing variables for program control flow
+    bool isTheProgramWorking = true; // while this variable is true the program runs
+    int userChoice = 0; // variable storing current user choice
+    int previousUserChoice = 0; // varibale storing previous user choice
+    vector <Products*> productsReference = { &pc1, &pc2, &pc3, &laptop1, &laptop2, &laptop3, &phone1, &phone2, &phone3 }; // vector that stores pointers to Products objects
 
-    int userAccount = -1;
-    bool productsListActive = false;
-    bool userBalanceActive = false;
-    bool userShoppingCartActive = false;
+    int userAccount = -1; // while value -1 user is logged off / when the value is different from -1, the user is logged in
+    bool productsListActive = false; // variable responsible for displaying the view of product list
+    bool userBalanceActive = false; // variable responsible for displaying the view of user balance
+    bool userShoppingCartActive = false; // variable responsible for displaying the view of shopping cart
 
-    Employee* choosenEmployee = nullptr;
-    bool employeeListActive = false;
-    bool taskBoardActive = false;
-    bool currentTaskBoardViewByPriority = true;
+    Employee* choosenEmployee = nullptr; // pointer to choosen employee
+    bool employeeListActive = false; // variable responsible for displaying the view of employee list
+    bool taskBoardActive = false; // variable responsible for displaying the view of task board
+    bool currentTaskBoardViewByPriority = true; // a variable that determines how tasks are displayed on the board
 
+    // Prompting the user to choose the application interface
     cout << "Hello! Choose application interface: (1) Customer interface, (2) Manager interface" << endl;
     cout << "Your choice: ";
     cin >> userChoice;
-    userChoice = userChoiceVerify(userChoice, { 1, 2 });
+    userChoice = userChoiceVerify(userChoice, { 1, 2 }); // Validating user input
 
+    // Customer interface
     if (userChoice == 1) {
         while (isTheProgramWorking) {
+            // Main menu
             cout << "Welcome customer! What would you like to do?" << endl;
             
+            // List of options if user is logged off
             if (userAccount == -1) {
                 cout << "1) Show list of products" << endl;
                 cout << "2) Log in" << endl;
@@ -760,6 +771,7 @@ int main()
                 userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4 });
             }
 
+            // List of options if user is logged in
             if (userAccount != -1) {
                 cout << "1) Show list of products" << endl;
                 cout << "2) Show user data" << endl;
@@ -772,6 +784,7 @@ int main()
                 userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4, 5, 6, 7});
             }
 
+            // Displays products list
             if(userChoice == 1) {
                 productsListActive = true;
                 while (productsListActive) {
@@ -793,6 +806,7 @@ int main()
                     cout << "[9] " << phone3.getProductName() << " - " << phone3.getPrice() << " PLN (" << phone3.getAmount() << " pieces left)" << endl;
                     cout << "--------------------------------------------------" << endl;
 
+                    // Product list menu
                     cout << "What do you want to do?" << endl;
                     cout << "1) Add a product to your shopping cart" << endl;
                     cout << "2) Show product details" << endl;
@@ -800,8 +814,10 @@ int main()
                     cin >> userChoice;
                     userChoice = userChoiceVerify(userChoice, { 1, 2, 3 }, false);
 
+                    // User adds product to their shopping cart
                     if (userChoice == 1) {
                         if (userAccount != -1) {
+                            // Adding product to user cart (by product index)
                             cout << "Choose the product you want to add to your shopping cart: ";
                             cin >> userChoice;
                             userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4, 5, 6, 7 ,8, 9 }, false);
@@ -812,12 +828,14 @@ int main()
                             cout << endl;
                             userChoice = 0;
                         } else {
+                            // Logged off user can't add product to their cart
                             system("cls");
                             cout << "Log in to add products to shopping cart!" << endl << endl;
                             userChoice = 0;
                         }
                     }
 
+                    // User inspects product (shows choosen products specification)
                     if (userChoice == 2) {
                         cout << "Choose the product you want to inspect: ";
                         cin >> userChoice;
@@ -864,6 +882,7 @@ int main()
                         userChoice = 0;
                     }
 
+                    // User exits product list
                     if (userChoice == 3) {
                         productsListActive = false;
                         system("cls");
@@ -872,14 +891,15 @@ int main()
                 }
             }
             
-            // User logged off options
-
+            // <==== User logged off options ====>
+            
+            // Log in
             if(userChoice == 2 && userAccount == -1) {
                 bool loggedIn = false;
                 int userAccountIndex = 0;
                 string userLogin;
                 string userPass;
-                
+
                 cout << "Enter your name: ";
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 getline(cin, userLogin);
@@ -889,6 +909,7 @@ int main()
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 system("cls");
 
+                // Checks if user provided correct data
                 for (int i = 0; i < customerList.size(); i++) {
                     if (userLogin == customerList[i].getUserName() && userPass == customerList[i].getUserPassword()) {
                         loggedIn = true;
@@ -896,10 +917,12 @@ int main()
                     userAccountIndex = i;
                 }
 
+                // Log in failure
                 if (!loggedIn) {
                     cout << "Your name or password didn't match. Try again." << endl << endl;
                 }
 
+                // Log in successful
                 if (loggedIn) {
                     userAccount = userAccountIndex;
                     cout << "You're logged in as " << userLogin << endl << endl;
@@ -907,6 +930,7 @@ int main()
                 userChoice = 0;
             }
 
+            // Creating new customer account
             if (userChoice == 3 && userAccount == -1) {
                 string userName;
                 string userPassword;
@@ -935,16 +959,19 @@ int main()
                 cout << "Your account has been created!" << endl << endl;
             }
 
+            // Exit program
             if (userChoice == 4 && userAccount == -1) {
                 isTheProgramWorking = false;
             }
 
-            // User logged in options
+            // <==== User logged in options ====>
 
+            // Display user data
             if (userChoice == 2 && userAccount != -1) {
                 cout << customerList[userAccount].getUserData() << endl << endl;
             }
 
+            // Display customer shopping cart
             if (userChoice == 3 && userAccount != -1) {
                 userShoppingCartActive = true;
                 while (userShoppingCartActive) {
@@ -957,6 +984,7 @@ int main()
                     cin >> userChoice;
                     userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4 }, false);
 
+                    // User removes product from their cart (by index)
                     if (userChoice == 1) {
                         cout << "Choose the number of product you would like to remove: ";
                         cin >> userChoice;
@@ -973,12 +1001,14 @@ int main()
                         userChoice = 0;
                     }
 
+                    // User removes all products from their cart
                     if (userChoice == 2) {
                         customerList[userAccount].clearCart();
                         system("cls");
                         cout << "All products have been removed from your shopping cart." << endl << endl;
                     }
 
+                    // User attempts to buy products (if there is enough funds on user balance the process will be successful)
                     if (userChoice == 3) {
                         system("cls");
                         if (customerList[userAccount].buyProducts()) {
@@ -988,6 +1018,7 @@ int main()
                         }
                     }
 
+                    // User exits shopping cart view
                     if (userChoice == 4) {
                         system("cls");
                         userShoppingCartActive = false;
@@ -996,6 +1027,7 @@ int main()
                 }
             }
 
+            // Display user balance 
             if (userChoice == 4 && userAccount != -1) {
                 userBalanceActive = true;
                 while (userBalanceActive) {
@@ -1007,6 +1039,7 @@ int main()
                     cin >> userChoice;
                     userChoice = userChoiceVerify(userChoice, { 1, 2, 3 }, false);
 
+                    // User deposits choosen amount of money into their account
                     if (userChoice == 1) {
                         int userAmount;
                         cout << "Enter the amount of money you want to deposit:";
@@ -1022,6 +1055,7 @@ int main()
                         cout << customerList[userAccount].deposit(userAmount) << endl << endl;
                     }
 
+                    // User withdraws choosen amount of money from their account
                     if (userChoice == 2) {
                         int userAmount;
                         cout << "Enter the amount of money you want to withdraw:";
@@ -1037,6 +1071,7 @@ int main()
                         cout << customerList[userAccount].withdraw(userAmount) << endl << endl;
                     }
 
+                    // User exits balance view
                     if (userChoice == 3) {
                         system("cls");
                         userBalanceActive = false;
@@ -1045,6 +1080,7 @@ int main()
                 }
             }
 
+            // Change current customer account password
             if (userChoice == 5 && userAccount != -1) {
                 string previousUserPassword;
                 cout << "Enter your previous password: ";
@@ -1053,16 +1089,19 @@ int main()
                 cout << endl;
             }
 
+            // Log off 
             if (userChoice == 6 && userAccount != -1) {
                 userAccount = -1;
                 cout << "You are now logged off" << endl << endl;
             }
 
+            // Exit program
             if (userChoice == 7 && userAccount != -1) {
                 isTheProgramWorking = false;
             }
         }
     }
+
 
     if (userChoice == 2) {
         while (isTheProgramWorking) {
