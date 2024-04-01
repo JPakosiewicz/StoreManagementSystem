@@ -438,6 +438,17 @@ public:
     }
 };
 
+/*******************************************************
+Class: UserBalance
+Description: Represents the balance of a user's account.
+Fields:
+ * balance (float) - stores the current balance of the user's account.
+Methods:
+ * getBalance() - Retrieves the current balance of the user's account.
+ * buy(float cartValue) - Deducts the specified cart value from the user's balance if sufficient funds are available and returns a message indicating the success or failure of the transaction.
+ * deposit(float amount) - Adds the specified amount to the user's balance if the amount is positive and returns a message confirming the deposit.
+ * withdraw(float amount) - Subtracts the specified amount from the user's balance if sufficient funds are available and returns a message indicating the success or failure of the withdrawal.
+*******************************************************/
 class UserBalance {
 private:
     float balance;
