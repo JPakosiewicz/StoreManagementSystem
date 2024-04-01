@@ -474,6 +474,18 @@ public:
 
 int Customer::numberOfUsers = 0;
 
+/*******************************************************
+ Function name: userChoiceVerify
+ Input parameters: 
+ * userChoice (int) - a variable storing the user's selection
+ * listOfChoices (vector<int>) - vector containing all possible options
+ * clearConsole (bool) - a logical variable that determines whether the console will be cleared (set to true by default)
+ Return value: userChoice (int) - returns the choice of the user which is included in the list of possible choices
+ Information: 
+ A function that checks whether the user has selected one of the possible options marked as numbers. 
+ If the user has selected the wrong number, he or she is forced to choose one of the possible options. 
+ Only when an option from the list is selected is the selection value returned.
+*******************************************************/
 int userChoiceVerify(int userChoice, vector<int> listOfChoices, bool clearConsole = true) {
     bool validChoice = find(listOfChoices.begin(), listOfChoices.end(), userChoice) != listOfChoices.end();
 
