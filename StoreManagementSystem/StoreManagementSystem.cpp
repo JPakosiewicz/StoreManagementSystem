@@ -108,6 +108,22 @@ public:
     Computer(string _name, string _brand, string _system, string _cpu, float _price, int _amount) : Products(_name, _brand, _system, _cpu, _price, _amount) {}
 };
 
+
+/*******************************************************
+Class: Laptop
+Description: Represents a laptop product with additional specifications.
+Fields:
+ * gpu (string) - Stores the GPU information of the laptop.
+ * memory (string) - Stores the memory information of the laptop.
+ * disk (string) - Stores the disk information of the laptop.
+ * screenType (string) - Stores the type of screen of the laptop.
+ * screenSize (float) - Stores the size of the screen of the laptop.
+Methods:
+ * setLaptopSpec(string _gpu, string _memory, string _disk, string _screenType, float _screenSize) - Sets the specifications of the laptop including GPU, memory, disk, screen type, and screen size.
+ * getLaptopSpec() - Retrieves the detailed specifications of the laptop including system, CPU, GPU, memory, disk, screen type, and screen size.
+Constructor:
+ * Laptop(string _name, string _brand, string _system, string _cpu, float _price, int _amount)
+*******************************************************/
 class Laptop : public Products {
 private:
     string gpu;
