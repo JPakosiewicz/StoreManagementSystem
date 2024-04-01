@@ -1102,9 +1102,10 @@ int main()
         }
     }
 
-
+    // Manager interface
     if (userChoice == 2) {
         while (isTheProgramWorking) {
+            // Main menu
             cout << "Welcome into manager interface. Choose what would you like to do:" << endl;
             cout << "1) Show list of employees" << endl;
             cout << "2) Show task board" << endl;
@@ -1113,6 +1114,7 @@ int main()
             cin >> userChoice;
             userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4 });
 
+            // Display list of employees
             if (userChoice == 1) {
                 employeeListActive = true;
                 while (employeeListActive) {
@@ -1130,6 +1132,7 @@ int main()
                     userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4 }, false);
                     previousUserChoice = userChoice;
 
+                    // User provides employee id (activates when user chooses option 1, 2 or 3)
                     if (userChoice == 1 || userChoice == 2 || userChoice == 3) {
                         cout << "Choose the employee id: ";
                         cin >> userChoice;
@@ -1148,6 +1151,7 @@ int main()
                         userChoice = previousUserChoice;
                     }
 
+                    // Display choosen employee details
                     if (userChoice == 1) {
                         system("cls");
                         cout << choosenEmployee->getEmployeeData();
@@ -1155,6 +1159,7 @@ int main()
                         userChoice = 0;
                     }
 
+                    // User changes choosen employee salary
                     if (userChoice == 2) {
                         int amount;
                         cout << "Insert the amount: ";
@@ -1170,6 +1175,7 @@ int main()
                         userChoice = 0;
                     }
 
+                    // User changes the amount of days off for the choosen employee ( positive number -> add number of days / negative number -> subtract number of days)
                     if (userChoice == 3) {
                         int amount;
                         cout << "Insert the amount of days you want to change (negative numbers decreases / positive numbers increases): ";
@@ -1192,6 +1198,7 @@ int main()
                         userChoice = 0;
                     }
 
+                    // User exits employee list view
                     if (userChoice == 4) {
                         userChoice = 0;
                         employeeListActive = false;
@@ -1200,14 +1207,17 @@ int main()
                 }
             }
 
+            // Display task board
             if (userChoice == 2) {
                 taskBoardActive = true;
                 while (taskBoardActive) {
+                    // Displays task board by priority of the tasks
                     if (currentTaskBoardViewByPriority) {
                         cout << "<Task Board - displayed by priority>" << endl;
                         cout << companyTaskBoard.displayTasksByPriority() << endl;
                     }
-
+                    
+                    // Displays task board by the tasks time left 
                     if (!currentTaskBoardViewByPriority) {
                         cout << "<Task Board - displayed by time left>" << endl;
                         cout << companyTaskBoard.displayTasksByTimeLeft() << endl;
@@ -1218,10 +1228,12 @@ int main()
                     cout << "1) Add task to the board" << endl;
                     cout << "2) Remove task from the board" << endl;
 
+                    // This option shows when user have choosen to display tasks by priority
                     if (currentTaskBoardViewByPriority) {
                         cout << "3) Display task board by time left" << endl;
                     }
 
+                    // This option shows when user have choosen to display tasks by time left
                     if (!currentTaskBoardViewByPriority) {
                         cout << "3) Display task board by priority" << endl;
                     }
@@ -1230,6 +1242,7 @@ int main()
                     cin >> userChoice;
                     userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4 }, false);
 
+                    // User adds task to task board
                     if (userChoice == 1) {
                         string newTaskDesc;
                         string newTaskAssignedEmployee;
@@ -1246,7 +1259,6 @@ int main()
                         cout << "Enter priority of this task (1 / 2 / 3): ";
                         cin >> newTaskPriority;
 
-
                         cout << "Enter how many days are left until the end of the task: ";
                         cin >> newTaskTime;
                         
@@ -1256,6 +1268,7 @@ int main()
                         userChoice = 0;
                     }
 
+                    // User removes task from task board (by id)
                     if (userChoice == 2) {
                         cout << "Choose the id of the task you want to remove: ";
                         cin >> userChoice;
@@ -1266,11 +1279,13 @@ int main()
                         userChoice = 0;
                     }
 
+                    // User changes the method of display
                     if (userChoice == 3) {
                         currentTaskBoardViewByPriority = !currentTaskBoardViewByPriority;
                         system("cls");
                     }
 
+                    // User exits task board view
                     if (userChoice == 4) {
                         taskBoardActive = false;
                         userChoice = 0;
@@ -1279,6 +1294,7 @@ int main()
                 }
             }
 
+            // Display product list
             if (userChoice == 3) {
                 productsListActive = true;
                 while (productsListActive) {
@@ -1308,18 +1324,21 @@ int main()
                     userChoice = userChoiceVerify(userChoice, { 1, 2 ,3 }, false);
                     previousUserChoice = userChoice;
 
+                    // User exits product list view
                     if (userChoice == 3) {
                         system("cls");
                         productsListActive = false;
                         userChoice = 0;
                     }
 
+                    // User provides the index of the product (activates when user chooses option 1 or 2)
                     if (previousUserChoice == 1 || previousUserChoice == 2) {
                         cout << "Choose the product: ";
                         cin >> userChoice;
                         userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
                     }
 
+                    // User changes choosen product specifications
                     if (previousUserChoice == 2) {
                         string newGpu;
                         string newMemory;
@@ -1330,6 +1349,7 @@ int main()
                         int newMemorySize;
                         int newBatterySize;
 
+                        // Computer 
                         if (userChoice >= 1 && userChoice <= 3) {
                             cout << "Insert computer GPU: ";
                             cin >> newGpu;
@@ -1339,6 +1359,7 @@ int main()
                             cin >> newDisk;
                         }
 
+                        // Laptop
                         if (userChoice >= 4 && userChoice <= 6) {
                             cout << "Insert laptop GPU: ";
                             cin >> newGpu;
@@ -1352,6 +1373,7 @@ int main()
                             cin >> newScreenSize;
                         }
 
+                        // Phone
                         if (userChoice >= 7 && userChoice <= 9) {
                             cout << "Insert phone screen size: ";
                             cin >> newScreenSize;
@@ -1366,6 +1388,7 @@ int main()
                         system("cls");
                         cout << "Product specifications updated" << endl << endl;
 
+                        // Display modified product specification
                         switch (userChoice) {
                         case 1:
                             pc1.setPcSpec(newGpu, newMemory, newDisk);
@@ -1407,6 +1430,7 @@ int main()
                         userChoice = 0;
                     }
 
+                    // User changes the amount of available products
                     if (previousUserChoice == 1) {
                         int amount = 0;
                         cout << "Insert the new amount of product: ";
@@ -1425,7 +1449,8 @@ int main()
                     }
                 }
             }
-
+            
+            // Exit program
             if (userChoice == 4) {
                 isTheProgramWorking = false;
             }
