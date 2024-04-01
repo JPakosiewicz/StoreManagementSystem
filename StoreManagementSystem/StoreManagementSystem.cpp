@@ -928,8 +928,8 @@ int main()
                 for (int i = 0; i < customerList.size(); i++) {
                     if (userLogin == customerList[i].getUserName() && userPass == customerList[i].getUserPassword()) {
                         loggedIn = true;
+                        userAccountIndex = i;
                     }
-                    userAccountIndex = i;
                 }
 
                 // Log in failure
