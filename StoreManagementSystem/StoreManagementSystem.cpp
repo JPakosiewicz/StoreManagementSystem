@@ -304,6 +304,18 @@ struct Task {
 
 int Task::nextId = 1;
 
+/*******************************************************
+Class: TaskBoard
+Description: Represents a task board containing tasks assigned to employees.
+Fields:
+ * employeeTasks (vector<Task>) - Vector storing Task objects representing the tasks on the task board.
+Methods:
+ * getTasksIds() - Retrieves the IDs of all tasks currently on the task board.
+ * addTask(string _desc, string _assignedEmp, int _priority, int _time) - Adds a new task to the task board with the specified description, assigned employee, priority, and time.
+ * removeTask(int taskId) - Removes the task with the specified ID from the task board.
+ * displayTasksByPriority() - Displays the tasks on the task board sorted by priority, showing ID, priority, description, assigned employee, and time left for each task.
+ * displayTasksByTimeLeft() - Displays the tasks on the task board sorted by time left, showing ID, time left, description, assigned employee, and priority for each task.
+*******************************************************/
 class TaskBoard {
 private:
     vector<Task> employeeTasks;
