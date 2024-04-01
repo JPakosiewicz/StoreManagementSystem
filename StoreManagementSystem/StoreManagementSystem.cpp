@@ -1463,12 +1463,21 @@ int main()
 // <======================== Tests ========================>
 void testProductsClass() {
     {
+        // Create a test instance of the Products class
         Products productTest("Keyboard", "Logitech", "None", "None", 120, 20);
+
+        // Check if the product name is correctly formatted
         assert(productTest.getProductName() == "Logitech Keyboard");
+        
+        // Check if the price and amount of products are correct
         assert(productTest.getPrice() == 120);
         assert(productTest.getAmount() == 20);
+        
+        // Update the amount of products and verify
         productTest.updateAmount(60);
         assert(productTest.getAmount() == 60);
+
+        // Verify the product information string
         assert(productTest.getProductInfo() == "Product name: Logitech Keyboard\nCost: 120 PLN\nAmount of products: 60\n");
     }
     //cout << "Product class valid" << endl;
@@ -1477,8 +1486,11 @@ void testProductsClass() {
 
 void testComputerClass() {
     {
+        // Create a test instance of the Computer class
         Computer computerTest("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
         computerTest.setPcSpec("Intel UHD Graphics 770", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
+
+        // Verify various attributes and specifications
         assert(computerTest.getProductName() == "HP Pro 290 G9 SFF");
         assert(computerTest.getPrice() == 2899);
         assert(computerTest.getAmount() == 200);
@@ -1491,8 +1503,11 @@ void testComputerClass() {
 
 void testLaptopClass() {
     {
+        // Create a test instance of the Laptop class
         Laptop laptopTest("ThinkPad E16", "Lenovo", "Windows 11 Pro", "Intel Core i5-1335U", 4200, 1);
         laptopTest.setLaptopSpec("Intel Iris Xe Graphics", "16 GB (DDR4, 3200 MHz)", "512 GB SSD M.2 PCIe", "Matte, LED, IPS", 16);
+
+        // Verify various attributes and specifications
         assert(laptopTest.getProductName() == "Lenovo ThinkPad E16");
         assert(laptopTest.getPrice() == 4200);
         assert(laptopTest.getAmount() == 1);
@@ -1505,8 +1520,11 @@ void testLaptopClass() {
 
 void testPhoneClass() {
     {
+        // Create a test instance of the Phone class
         Phone phoneTest("Galaxy S23", "Samsung", "Android 13", "Qualcomm Snapdragon 8 gen 2", 3799, 73);
         phoneTest.setPhoneSpec(6.1, 8, 256, 3900);
+
+        // Verify various attributes and specifications
         assert(phoneTest.getProductName() == "Samsung Galaxy S23");
         assert(phoneTest.getPrice() == 3799);
         assert(phoneTest.getAmount() == 73);
@@ -1519,18 +1537,22 @@ void testPhoneClass() {
 
 void testEmployeeClass() {
     {
+        // Create a test instance of the Employee class
         Employee employeeTest("John", "Doe", "Manager", "johndoe@gmail.com", 5000);
         
+        // Verify employee data and salary
         assert(employeeTest.getEmployeeData() == "Employee 0 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 20 days\n");
-        
         assert(employeeTest.getEmployeeSlary() == "Employee salary: 5000 PLN\n");
         
+        // Change employee salary and verify
         employeeTest.changeEmployeeSalary(6000);
         assert(employeeTest.getEmployeeSlary() == "Employee salary: 6000 PLN\n");
 
+        // Decrease amount of days off and verify
         employeeTest.decreaseAmountOfDaysOff(5);
         assert(employeeTest.getEmployeeData() == "Employee 0 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 15 days\n");
 
+        // Increase amount of days off and verify
         employeeTest.increaseAmountOfDaysOff(10);
         assert(employeeTest.getEmployeeData() == "Employee 0 data:\nName: John Doe\nJob position: Manager\nEmployee email: johndoe@gmail.com\nAmount of days off: 25 days\n");
     }
@@ -1540,22 +1562,28 @@ void testEmployeeClass() {
 
 void testTaskBoardClass() {
     {
+        // Create a test instance of the TaskBoard class
         TaskBoard taskBoardTest;
 
+        // Add tasks to the task board
         taskBoardTest.addTask("Fix PC", "John Doe", 2, 5);
         taskBoardTest.addTask("Clean floor", "Jane Smith", 3, 3);
         taskBoardTest.addTask("Organize documents", "Alice Johnson", 1, 7);
 
+        // Display tasks by priority and verify
         string tasksByPriority = taskBoardTest.displayTasksByPriority();
         assert(tasksByPriority == "ID: 2, Priority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nID: 1, Priority: 2, Description: Fix PC, Assigned to: John Doe, Time left: 5 days\nID: 3, Priority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
 
+        // Display tasks by time left and verify
         string tasksByTimeLeft = taskBoardTest.displayTasksByTimeLeft();
         assert(tasksByTimeLeft == "ID: 2, Time left: 3 days, Description: Clean floor, Assigned to: Jane Smith, Priority: 3\nID: 1, Time left: 5 days, Description: Fix PC, Assigned to: John Doe, Priority: 2\nID: 3, Time left: 7 days, Description: Organize documents, Assigned to: Alice Johnson, Priority: 1\n");
 
+        // Remove a task and verify
         taskBoardTest.removeTask(1);
         tasksByPriority = taskBoardTest.displayTasksByPriority();
         assert(tasksByPriority == "ID: 2, Priority: 3, Description: Clean floor, Assigned to: Jane Smith, Time left: 3 days\nID: 3, Priority: 1, Description: Organize documents, Assigned to: Alice Johnson, Time left: 7 days\n");
 
+        // Reset the task ID counter
         Task::nextId = 1;
     }
     //cout << "TaskBoard class valid" << endl;
@@ -1564,18 +1592,23 @@ void testTaskBoardClass() {
 
 void testShoppingCart() {
     {
+        // Create test products
         Products product1("Keyboard", "Razer", "Windows", "AMD", 99.99, 1);
         Products product2("Mouse", "Logitech", "Windows", "Intel", 49.99, 2);
 
+        // Create a test instance of the ShoppingCart class
         ShoppingCart cartTest;
+
+        // Add products to the shopping cart and verify the total price
         cartTest.addProduct(product1);
         cartTest.addProduct(product2);
-
         assert(abs(cartTest.getCartValue() - (99.99 + 49.99)) < 0.01);
 
+        // Verify the display of the shopping cart
         string expectedCartDisplay = "Shopping Cart:\n1) Razer Keyboard: 99.99 PLN\n2) Logitech Mouse: 49.99 PLN\nFinal price: 149.98 PLN\n";
         assert(cartTest.displayCart() == expectedCartDisplay);
 
+        // Remove a product from the shopping cart and verify the total price
         cartTest.removeProduct(0);
         assert(abs(cartTest.getCartValue() - 49.99) < 0.01);
     }
@@ -1585,16 +1618,21 @@ void testShoppingCart() {
 
 void testUserBalance() {
     {
+        // Create a test instance of the UserBalance class
         UserBalance balanceTest;
 
+        // Deposit funds and verify balance
         balanceTest.deposit(1000);
         assert(balanceTest.getBalance() == 6000); // 5000 + 1000
 
+        // Withdraw funds and verify balance
         balanceTest.withdraw(2000);
         assert(balanceTest.getBalance() == 4000); // 6000 - 2000
 
+        // Buy products and verify result
         assert(balanceTest.buy(1000) == "You bought the items\n");
 
+        // Try to buy products with insufficient funds and verify result
         assert(balanceTest.buy(5000) == "Insufficient funds to buy products!\n");
     }
     //cout << "UserBalance class valid" << endl;
@@ -1603,30 +1641,39 @@ void testUserBalance() {
 
 void testCustomerClass() {
     {
+        // Create a test instance of the Customer class
         Customer customerTest("John Doe", "password123", "john@example.com", "123 Main Street");
 
+        // Verify user data
         assert(customerTest.getUserData() == "User data: \nName: John Doe\nEmail: john@example.com\nAdress: 123 Main Street\n");
 
+        // Create test products
         Products product1("Keyboard", "Logitech", "None", "None", 120, 1);
         Products product2("Mouse", "Logitech", "None", "None", 50, 1);
+        
+        // Add products to the shopping cart and verify display
         customerTest.addToCart(product1);
         customerTest.addToCart(product2);
-
         assert(customerTest.displayCart() == "Shopping Cart:\n1) Logitech Keyboard: 120 PLN\n2) Logitech Mouse: 50 PLN\nFinal price: 170 PLN\n");
 
+        // Clear the shopping cart and verify display
         customerTest.clearCart();
         assert(customerTest.displayCart() == "Shopping Cart:\nNo products in shopping cart\nFinal price: 0 PLN\n");
 
+        // Deposit funds and verify balance
         customerTest.deposit(1000);
         assert(customerTest.showBalance() == "Your balance: 6000 PLN\n");
 
+        // Withdraw funds and verify balance
         customerTest.withdraw(500);
         assert(customerTest.showBalance() == "Your balance: 5500 PLN\n");
 
+        // Add products to the shopping cart and buy, then verify balance
         customerTest.addToCart(product1);
         assert(customerTest.buyProducts() == true);
         assert(customerTest.showBalance() == "Your balance: 5380 PLN\n");
 
+        // Add products to the shopping cart, remove one, and verify display
         customerTest.addToCart(product2);
         customerTest.removeProductFromCart(0);
         assert(customerTest.displayCart() == "Shopping Cart:\nNo products in shopping cart\nFinal price: 0 PLN\n");
