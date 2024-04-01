@@ -155,6 +155,20 @@ public:
     Laptop(string _name, string _brand, string _system, string _cpu, float _price, int _amount) : Products(_name, _brand, _system, _cpu, _price, _amount) {}
 };
 
+/*******************************************************
+Class: Phone
+Description: Represents a phone product with additional specifications.
+Fields:
+ * screenSize (float) - Stores the size of the phone screen.
+ * ramSize (int) - Stores the RAM size of the phone.
+ * memorySize (int) - Stores the built-in memory size of the phone.
+ * batterySize (int) - Stores the battery capacity of the phone.
+Methods:
+ * setPhoneSpec(float _screenSize, int _ramSize, int _memorySize, int _batterySize) - Sets the specifications of the phone including screen size, RAM size, built-in memory size, and battery capacity.
+ * getPhoneSpec() - Retrieves the detailed specifications of the phone including system, CPU, screen size, RAM size, built-in memory size, and battery capacity.
+Constructor:
+ * Phone(string _name, string _brand, string _system, string _cpu, float _price, int _amount)
+*******************************************************/
 class Phone : public Products {
 private:
     float screenSize;
