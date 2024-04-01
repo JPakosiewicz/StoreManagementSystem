@@ -373,7 +373,7 @@ public:
         });
 
         stringstream ss;
-        for (auto& task : employeeTasks) {
+        for (auto task : employeeTasks) {
             ss << "ID: " << task.id << ", Time left: " << task.timeLeft << " days, Description: " << task.description << ", Assigned to: " << task.assignedEmployee << ", Priority: " << task.priority << endl;
         }
         return ss.str();
@@ -395,17 +395,23 @@ Methods:
  * getNumberOfItems() - Retrieves the total number of items in the shopping cart.
  * getCartValue() - Retrieves the total value of the items in the shopping cart.
  * displayCart() - Displays the contents of the shopping cart, including the product names and prices, as well as the final price.
+ * decreaseAmountOfProductsInCart() - Decreases the amount of every product in the cart by one
 *******************************************************/
 class ShoppingCart {
 private:
-    vector<Products> productsInCart;
+    vector<Products*> productsInCart;
     int numberOfItems = 0;
     float cartValue = 0;
 public:
-    void addProduct(Products product) {
-        numberOfItems++;
-        cartValue += product.getPrice();
-        productsInCart.push_back(product);
+    bool addProduct(Products* product) {
+        if (product->getAmount() > 0) {
+            numberOfItems++;
+            cartValue += product->getPrice();
+            productsInCart.push_back(product);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     void clearCart() {
@@ -420,7 +426,7 @@ public:
             return;
         }
         numberOfItems--;
-        cartValue -= productsInCart[index].getPrice();
+        cartValue -= productsInCart[index]->getPrice();
         productsInCart.erase(productsInCart.begin() + index);
     }
 
@@ -438,7 +444,7 @@ public:
         ss << "Shopping Cart:" << endl;
         for (auto product : productsInCart) {
             productIndex++;
-            ss << productIndex << ") " << product.getProductName() << ": " << product.getPrice() << " PLN" << endl;;
+            ss << productIndex << ") " << product->getProductName() << ": " << product->getPrice() << " PLN" << endl;;
         }
 
         if (productsInCart.size() == 0) {
@@ -447,6 +453,12 @@ public:
 
         ss << "Final price: " << cartValue << " PLN" << endl;
         return ss.str();
+    }
+
+    void decreaseAmountOfProductsInCart() {
+        for (auto& product : productsInCart) {
+            product->updateAmount(product->getAmount() - 1);
+        }
     }
 };
 
@@ -589,8 +601,8 @@ public:
         cout << "Password has been changed!" << endl;
     }
 
-    void addToCart(Products product) {
-        cart.addProduct(product);
+    bool addToCart(Products* product) {
+        return cart.addProduct(product);
     }
 
     void clearCart() {
@@ -625,6 +637,7 @@ public:
 
     bool buyProducts() {
         if (userBalance.buy(cart.getCartValue()) == "You bought the items\n") {
+            cart.decreaseAmountOfProductsInCart();
             cart.clearCart();
             return true;
         }
@@ -823,9 +836,11 @@ int main()
                             userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4, 5, 6, 7 ,8, 9 }, false);
                             system("cls");
 
-                            customerList[userAccount].addToCart(*productsReference[userChoice - 1]);
-                            cout << "Product has been added to your cart" << endl;
-                            cout << endl;
+                            if (customerList[userAccount].addToCart(productsReference[userChoice - 1])) {
+                                cout << "Product has been added to your cart" << endl << endl;
+                            } else {
+                                cout << "Sorry, the product is out of stock." << endl << endl;
+                            }
                             userChoice = 0;
                         } else {
                             // Logged off user can't add product to their cart
@@ -986,35 +1001,56 @@ int main()
 
                     // User removes product from their cart (by index)
                     if (userChoice == 1) {
-                        cout << "Choose the number of product you would like to remove: ";
-                        cin >> userChoice;
 
-                        vector <int> rangeOfItemsInCart;
-                        for (int i = 1; i < customerList[userAccount].getNumberOfItemsInCart(); i++) {
-                            rangeOfItemsInCart.push_back(i);
+                        if (customerList[userAccount].getNumberOfItemsInCart() == 0) {
+                            system("cls");
+                            cout << "Your shopping cart is empty." << endl << endl;
                         }
 
-                        userChoice = userChoiceVerify(userChoice, rangeOfItemsInCart, false);
-                        customerList[userAccount].removeProductFromCart(userChoice - 1);
-                        system("cls");
-                        cout << "Product has been removed" << endl << endl;
-                        userChoice = 0;
+                        if (customerList[userAccount].getNumberOfItemsInCart() != 0) {
+                            cout << "Choose the number of product you would like to remove: ";
+                            cin >> userChoice;
+
+                            vector <int> rangeOfItemsInCart;
+                            for (int i = 1; i <= customerList[userAccount].getNumberOfItemsInCart(); i++) {
+                                rangeOfItemsInCart.push_back(i);
+                            }
+
+                            userChoice = userChoiceVerify(userChoice, rangeOfItemsInCart, false);
+                            customerList[userAccount].removeProductFromCart(userChoice - 1);
+                            system("cls");
+                            cout << "Product has been removed" << endl << endl;
+                            userChoice = 0;
+                        }
                     }
 
                     // User removes all products from their cart
                     if (userChoice == 2) {
-                        customerList[userAccount].clearCart();
-                        system("cls");
-                        cout << "All products have been removed from your shopping cart." << endl << endl;
+
+                        if (customerList[userAccount].getNumberOfItemsInCart() == 0) {
+                            system("cls");
+                            cout << "Your shopping cart is empty." << endl << endl;
+                        }
+
+                        if (customerList[userAccount].getNumberOfItemsInCart() != 0) {
+                            customerList[userAccount].clearCart();
+                            system("cls");
+                            cout << "All products have been removed from your shopping cart." << endl << endl;
+                        }
                     }
 
                     // User attempts to buy products (if there is enough funds on user balance the process will be successful)
                     if (userChoice == 3) {
                         system("cls");
-                        if (customerList[userAccount].buyProducts()) {
-                            cout << "Products bought" << endl << endl;
+                        if (customerList[userAccount].getNumberOfItemsInCart() != 0) {
+                            if (customerList[userAccount].buyProducts()) {
+                                cout << "Products bought" << endl << endl;
+                            }
+                            else {
+                                cout << "Insufficient funds!" << endl << endl;
+                            }
                         } else {
-                            cout << "Insufficient funds!" << endl << endl;
+                            cout << "Your shopping cart is empty." << endl << endl;
                         }
                     }
 
@@ -1600,8 +1636,8 @@ void testShoppingCart() {
         ShoppingCart cartTest;
 
         // Add products to the shopping cart and verify the total price
-        cartTest.addProduct(product1);
-        cartTest.addProduct(product2);
+        cartTest.addProduct(&product1);
+        cartTest.addProduct(&product2);
         assert(abs(cartTest.getCartValue() - (99.99 + 49.99)) < 0.01);
 
         // Verify the display of the shopping cart
@@ -1652,8 +1688,8 @@ void testCustomerClass() {
         Products product2("Mouse", "Logitech", "None", "None", 50, 1);
         
         // Add products to the shopping cart and verify display
-        customerTest.addToCart(product1);
-        customerTest.addToCart(product2);
+        customerTest.addToCart(&product1);
+        customerTest.addToCart(&product2);
         assert(customerTest.displayCart() == "Shopping Cart:\n1) Logitech Keyboard: 120 PLN\n2) Logitech Mouse: 50 PLN\nFinal price: 170 PLN\n");
 
         // Clear the shopping cart and verify display
@@ -1669,12 +1705,12 @@ void testCustomerClass() {
         assert(customerTest.showBalance() == "Your balance: 5500 PLN\n");
 
         // Add products to the shopping cart and buy, then verify balance
-        customerTest.addToCart(product1);
+        customerTest.addToCart(&product1);
         assert(customerTest.buyProducts() == true);
         assert(customerTest.showBalance() == "Your balance: 5380 PLN\n");
 
         // Add products to the shopping cart, remove one, and verify display
-        customerTest.addToCart(product2);
+        customerTest.addToCart(&product2);
         customerTest.removeProductFromCart(0);
         assert(customerTest.displayCart() == "Shopping Cart:\nNo products in shopping cart\nFinal price: 0 PLN\n");
     }
