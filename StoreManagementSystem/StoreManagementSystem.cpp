@@ -368,6 +368,22 @@ public:
     }
 };
 
+
+/*******************************************************
+Class: ShoppingCart
+Description: Represents a shopping cart containing products.
+Fields:
+ * productsInCart (vector<Products>) - Vector storing Products objects representing the products in the shopping cart.
+ * numberOfItems (int) - stores the total number of items in the shopping cart.
+ * cartValue (float) - stores the total value of the items in the shopping cart.
+Methods:
+ * addProduct(Products product) - Adds a product to the shopping cart, updating the number of items and cart value accordingly.
+ * clearCart() - Clears all products from the shopping cart and resets the number of items and cart value.
+ * removeProduct(int index) - Removes a product from the shopping cart at the specified index, updating the number of items and cart value accordingly.
+ * getNumberOfItems() - Retrieves the total number of items in the shopping cart.
+ * getCartValue() - Retrieves the total value of the items in the shopping cart.
+ * displayCart() - Displays the contents of the shopping cart, including the product names and prices, as well as the final price.
+*******************************************************/
 class ShoppingCart {
 private:
     vector<Products> productsInCart;
