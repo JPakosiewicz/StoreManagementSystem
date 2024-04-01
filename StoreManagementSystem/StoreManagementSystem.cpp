@@ -10,6 +10,7 @@ using namespace std;
 Class: Products
 Description: Represents a product with basic information.
 Fields:
+ * typesOfProducts (static int) - Static field to keep track of the total number of products available in store.
  * id (int) - Represents the unique identifier of the product.
  * name (string) - Stores the name of the product.
  * brand (string) - Stores the brand of the product.
@@ -198,6 +199,28 @@ public:
     Phone(string _name, string _brand, string _system, string _cpu, float _price, int _amount) : Products(_name, _brand, _system, _cpu, _price, _amount) {}
 };
 
+/*******************************************************
+Class: Employee
+Description: Represents an employee with basic personal and employment information.
+Fields:
+ * numberOfEmployees (static int) - Static field to keep track of the total number of employees.
+ * id (int) - Represents the unique identifier of the employee.
+ * salary (float) - Stores the salary of the employee.
+ * amountOfDaysOff (int) - Stores the remaining days off for the employee (default value is 20 days).
+ * name (string) - Stores the first name of the employee.
+ * surname (string) - Stores the last name of the employee.
+ * jobPosition (string) - Stores the job position of the employee.
+ * email (string) - Stores the email address of the employee.
+Methods:
+ * getBasicData() - Retrieves the basic personal and employment data of the employee, including name, surname, and job position.
+ * getEmployeeData() - Retrieves detailed information about the employee, including name, surname, job position, email, and remaining days off.
+ * getEmployeeSlary() - Retrieves the salary of the employee.
+ * changeEmployeeSalary(float _salary) - Updates the salary of the employee.
+ * decreaseAmountOfDaysOff(int _amount) - Decreases the remaining days off for the employee by the specified amount.
+ * increaseAmountOfDaysOff(int _amount) - Increases the remaining days off for the employee by the specified amount.
+Constructor:
+ * Employee(string _name, string _surname, string _jobPosition, string _email, float _salary)
+*******************************************************/
 class Employee {
 private:
     static int numberOfEmployees;
