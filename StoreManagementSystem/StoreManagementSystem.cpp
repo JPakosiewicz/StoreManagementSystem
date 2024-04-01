@@ -6,6 +6,26 @@
 
 using namespace std;
 
+/*******************************************************
+Class: Products
+Description: Represents a product with basic information.
+Fields:
+ * id (int) - Represents the unique identifier of the product.
+ * name (string) - Stores the name of the product.
+ * brand (string) - Stores the brand of the product.
+ * system (string) - Stores the system information of the product.
+ * cpu (string) - Stores the CPU information of the product.
+ * price (int) - Stores the price of the product.
+ * amount (int) - Stores the quantity of the product available.
+Methods:
+ * getProductInfo() - Retrieves the detailed information about the product including its name, price, and quantity.
+ * getProductName() - Retrieves the full name of the product including its brand and name.
+ * getPrice() - Retrieves the price of the product.
+ * getAmount() - Retrieves the available quantity of the product.
+ * updateAmount(int _amount) - Updates the quantity of the product available.
+Constructor:
+ * Products(string _name, string _brand, string _system, string _cpu, float _price, int _amount)
+*******************************************************/
 class Products {
 private:
     static int typesOfProducts;
@@ -484,7 +504,7 @@ int Customer::numberOfUsers = 0;
  Information: 
  A function that checks whether the user has selected one of the possible options marked as numbers. 
  If the user has selected the wrong number, he or she is forced to choose one of the possible options. 
- Only when an option from the list is selected is the selection value returned.
+ Only when an option from the list is selected, the selection value is returned.
 *******************************************************/
 int userChoiceVerify(int userChoice, vector<int> listOfChoices, bool clearConsole = true) {
     bool validChoice = find(listOfChoices.begin(), listOfChoices.end(), userChoice) != listOfChoices.end();
