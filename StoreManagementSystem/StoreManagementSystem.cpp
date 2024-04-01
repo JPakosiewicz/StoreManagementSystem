@@ -281,6 +281,18 @@ public:
 
 int Employee::numberOfEmployees = 0;
 
+/*******************************************************
+Struct: Task
+Description: Represents a task assigned to an employee.
+Fields:
+ * id (int) - Unique identifier of the task.
+ * description (string) - Stores the description of the task.
+ * assignedEmployee (string) - Stores the name of the employee assigned to the task.
+ * priority (int) - The priority level of the task (1 - lowest, 3 - highest).
+ * timeLeft (int) - The remaining time to complete the task in days.
+Constructor:
+ * Task(string _desc, string _assignedEmp, int _priority, int _time)
+*******************************************************/
 struct Task {
     static int nextId;
     int id;
