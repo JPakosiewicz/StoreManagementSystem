@@ -1,0 +1,3 @@
+[Name Password Email Address]
+Michael Wilson,password123,john@gmail.com,123 Main St
+Jennifer Brown,abc123,jennifer@gmail.com,456 Elm St

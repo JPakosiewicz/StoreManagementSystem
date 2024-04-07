@@ -1,0 +1,4 @@
+[TaskName AssignedTo Priority DaysLeft]
+Organize products on shelves,Alice Smith,2,6
+Fix broken piece of technology,Bob Johnson,0,2
+Restock products,John Doe,4,4

@@ -1,0 +1,4 @@
+[Name Surname JobPosition Email Salary]
+John,Doe,Manager,johndoe@gmail.com,8590
+Alice,Smith,Cashier,alice123@gmail.com,4200
+Bob,Johnson,Technician,johnsonb@gmail.com,6130

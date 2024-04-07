@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <sstream>
+#include <fstream>
 #include <cassert>
 
 using namespace std;
@@ -24,6 +25,7 @@ Methods:
  * getPrice() - Retrieves the price of the product.
  * getAmount() - Retrieves the available quantity of the product.
  * updateAmount(int _amount) - Updates the quantity of the product available.
+ * getSpec() (virtual) - declaration of a function that will be used to display specific data.
 Constructor:
  * Products(string _name, string _brand, string _system, string _cpu, float _price, int _amount)
 *******************************************************/
@@ -63,6 +65,10 @@ public:
         amount = _amount;
     }
 
+    virtual string getSpec() {
+        return "";
+    }
+
     Products(string _name, string _brand, string _system, string _cpu, float _price, int _amount) : name(_name), brand(_brand), system(_system), cpu(_cpu), price(_price), amount(_amount) {
         id = ++typesOfProducts;
     }
@@ -79,7 +85,7 @@ Fields:
  * disk (string) - Stores the disk information of the computer.
 Methods:
  * setPcSpec(string _gpu, string _memory, string _disk) - Sets the specifications of the computer including GPU, memory, and disk.
- * getPcSpec() - Retrieves the detailed specifications of the computer including system, CPU, GPU, memory, and disk.
+ * getSpec() (override function) - Retrieves the detailed specifications of the computer including system, CPU, GPU, memory, and disk.
 Constructor:
  * Computer(string _name, string _brand, string _system, string _cpu, float _price, int _amount)
 *******************************************************/
@@ -95,7 +101,7 @@ public:
         disk = _disk;
     }
     
-    string getPcSpec() {
+    string getSpec() override {
         stringstream ss;
         ss << "Computer specifications: " << endl;
         ss << "* System - " << system << endl;
@@ -121,7 +127,7 @@ Fields:
  * screenSize (float) - Stores the size of the screen of the laptop.
 Methods:
  * setLaptopSpec(string _gpu, string _memory, string _disk, string _screenType, float _screenSize) - Sets the specifications of the laptop including GPU, memory, disk, screen type, and screen size.
- * getLaptopSpec() - Retrieves the detailed specifications of the laptop including system, CPU, GPU, memory, disk, screen type, and screen size.
+ * getSpec() (override function) - Retrieves the detailed specifications of the laptop including system, CPU, GPU, memory, disk, screen type, and screen size.
 Constructor:
  * Laptop(string _name, string _brand, string _system, string _cpu, float _price, int _amount)
 *******************************************************/
@@ -141,7 +147,7 @@ public:
         screenSize = _screenSize;
     }
     
-    string getLaptopSpec() {
+    string getSpec() override {
         stringstream ss;
         ss << "Computer specifications: " << endl;
         ss << "* System - " << system << endl;
@@ -166,7 +172,7 @@ Fields:
  * batterySize (int) - Stores the battery capacity of the phone.
 Methods:
  * setPhoneSpec(float _screenSize, int _ramSize, int _memorySize, int _batterySize) - Sets the specifications of the phone including screen size, RAM size, built-in memory size, and battery capacity.
- * getPhoneSpec() - Retrieves the detailed specifications of the phone including system, CPU, screen size, RAM size, built-in memory size, and battery capacity.
+ * getSpec() (override function) - Retrieves the detailed specifications of the phone including system, CPU, screen size, RAM size, built-in memory size, and battery capacity.
 Constructor:
  * Phone(string _name, string _brand, string _system, string _cpu, float _price, int _amount)
 *******************************************************/
@@ -184,7 +190,7 @@ public:
         batterySize = _batterySize;
     }
 
-    string getPhoneSpec() {
+    string getSpec() override {
         stringstream ss;
         ss << "Phone specifications: " << endl;
         ss << "* System - " << system << endl;
@@ -682,6 +688,42 @@ int userChoiceVerify(int userChoice, vector<int> listOfChoices, bool clearConsol
     return userChoice;
 }
 
+/*******************************************************
+ Function name: readDataFromFile
+ Input parameters:
+ * filename (const string) - filename to read
+ Return value: data (vector<vector<string>>) - a two-dimensional vector containing the contents of the read file
+ Information:
+ The function reads the selected file and divides its contents into different rows.
+ Each row refers to a separate entity in the file.
+*******************************************************/
+vector<vector<string>> readDataFromFile(const string filename) {
+    vector<vector<string>> data;
+
+    ifstream file("Data/" + filename);
+
+    if (!file.is_open()) {
+        cout << "Failed to open file: " << filename << endl;
+        return data;
+    }
+
+    string line;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string item;
+        vector<string> row;
+
+        while (getline(ss, item, ',')) {
+            row.push_back(item);
+        }
+
+        data.push_back(row);
+    }
+
+    file.close();
+    return data;
+}
+
 // Tests declaration
 void testProductsClass();
 void testComputerClass();
@@ -692,6 +734,7 @@ void testTaskBoardClass();
 void testShoppingCart();
 void testUserBalance();
 void testCustomerClass();
+void testreadDataFromFileFunc();
 
 int main()
 {
@@ -705,52 +748,149 @@ int main()
     testShoppingCart();
     testUserBalance();
     testCustomerClass();
+    testreadDataFromFileFunc();
 
-    // Creating objects of class Computer and setting their specifications
-    Computer pc1("Pro 290 G9 SFF", "HP", "Windows 11 Pro", "Intel Core i5-13500", 2899, 200);
-    pc1.setPcSpec("Intel UHD Graphics 770", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
-    Computer pc2("Nitro", "Acer", "No system", "Intel Core i5-12400F", 2999, 100);
-    pc2.setPcSpec("NVIDIA GeForce GTX 1660 SUPER", "16 GB (DIMM DDR4, 3200 MHz)", "512 GB SSD PCIe");
-    Computer pc3("G4M3R HERO", "X-kom", "Windows 11 Home", "Intel Core i7-14700F", 8700, 50);
-    pc3.setPcSpec("NVIDIA GeForce RTX 4070 Super", "32 GB (DIMM DDR5, 6000MHz)", "1000 GB SSD M.2 PCIe 4.0");
+    // <===== Fetching products data =====>
+    vector<vector<string>> productData = readDataFromFile("Products-data.txt");
+    vector<Computer> computers;
+    vector<Laptop> laptops;
+    vector<Phone> phones;
 
-    // Creating objects of class Laptop and setting their specifications
-    Laptop laptop1("ThinkPad E16", "Lenovo", "Windows 11 Pro", "Intel Core i5-1335U", 4200, 1);
-    laptop1.setLaptopSpec("Intel Iris Xe Graphics", "16 GB (DDR4, 3200 MHz)", "512 GB SSD M.2 PCIe", "Matte, LED, IPS", 16);
-    Laptop laptop2("Extensa", "Acer", "Windows 11 Home", "Intel Core i5-1235U", 2399, 152);
-    laptop2.setLaptopSpec("Intel UHD", "16 GB (DDR4, 3200 MHz)", "1000 GB SSD M.2 PCIe", "Matte, LED, IPS", 15.6);
-    Laptop laptop3("Bravo 15", "MSI", "No system", "AMD Ryzen 7 7735HS", 4399, 34);
-    laptop3.setLaptopSpec("NVIDIA GeForce RTX 4060", "16 GB (DDR5, 4800 MHz)", "1000 GB SSD M.2 PCIe", "Matte, LED, IPS", 15.6);
+    for (auto row : productData) {
+        if (row[0] == "Computer") {
+            if (row.size() >= 9) {
+                // Fetching data from the row
+                string name = row[1];
+                string brand = row[2];
+                string system = row[3];
+                string cpu = row[4];
+                float price = stof(row[5]);
+                int amount = stoi(row[6]);
+                string gpu = row[7];
+                string memory = row[8];
+                string disk = row[9];
 
-    // Creating objects of class Phone and setting their specifications
-    Phone phone1("Galaxy S23", "Samsung", "Android 13", "Qualcomm Snapdragon 8 gen 2", 3799, 73);
-    phone1.setPhoneSpec(6.1, 8, 256, 3900);
-    Phone phone2("iPhone 13", "Apple", "iOS 15", "Apple A15 Bionic", 2649, 10);
-    phone2.setPhoneSpec(6.1, 8, 256, 3227);
-    Phone phone3("Redmi Note 12", "Xiaomi", "Android 13", "Qualcomm Snapdragon 685", 649, 123);
-    phone3.setPhoneSpec(6.67, 4, 128, 5000);
+                // Creating Computer object and filling it with data
+                Computer pc(name, brand, system, cpu, price, amount);
+                pc.setPcSpec(gpu, memory, disk);
 
-    // Creating employees that work in the store
-    Employee employee1("John", "Doe", "Manager", "johndoe@gmail.com", 8590);
-    Employee employee2("Alice", "Smith", "Cashier", "alice123@gmail.com", 4200);
-    Employee employee3("Bob", "Johnson", "Technician", "johnsonb@gmail.com", 6130);
+                // Adding object to computers vector
+                computers.push_back(pc);
+            }
+        } else if (row[0] == "Laptop") {
+            if (row.size() >= 13) {
+                // Fetching data from the row
+                string name = row[1];
+                string brand = row[2];
+                string system = row[3];
+                string cpu = row[4];
+                float price = stof(row[5]);
+                int amount = stoi(row[6]);
+                string gpu = row[7];
+                string memory = row[8];
+                string disk = row[9];
+                string screenType = row[10] + ", " + row[11] + ", " + row[12];
+                float screenSize = stof(row[13]);
 
-    // Creating company task board and adding tasks to it
+                // Creating Laptop object and filling it with data
+                Laptop laptop(name, brand, system, cpu, price, amount);
+                laptop.setLaptopSpec(gpu, memory, disk, screenType, screenSize);
+
+                // Adding object to laptops vector
+                laptops.push_back(laptop);
+            }
+        } else if (row[0] == "Phone") {
+            if (row.size() >= 10) {
+                // Fetching data from the row
+                string name = row[1];
+                string brand = row[2];
+                string system = row[3];
+                string cpu = row[4];
+                float price = stof(row[5]);
+                int amount = stoi(row[6]);
+                float screenSize = stof(row[7]);
+                int ramSize = stoi(row[8]);
+                int memorySize = stoi(row[9]);
+                int batterySize = stoi(row[10]);
+
+                // Creating Phone object and filling it with data
+                Phone phone(name, brand, system, cpu, price, amount);
+                phone.setPhoneSpec(screenSize, ramSize, memorySize, batterySize);
+
+                // Adding object to phones vector
+                phones.push_back(phone);
+            }
+        }
+    }
+
+    // <===== Fetching Employee data =====>
+    vector<vector<string>> employeeData = readDataFromFile("Employee-data.txt");
+    vector<Employee> employeeList;
+
+    // Fetching employee data from the row
+    for (auto row : employeeData) {
+        if (row.size() >= 5) { 
+            string firstName = row[0];
+            string lastName = row[1];
+            string position = row[2];
+            string email = row[3];
+            int salary = stoi(row[4]);
+
+            // Creating Employee object and adding it to vector employeeList
+            employeeList.emplace_back(firstName, lastName, position, email, salary);
+        }
+    }
+
+    // <===== Fetching Customer data =====>
+    vector<vector<string>> customerData = readDataFromFile("Customer-data.txt");
+    vector<Customer> customerList;
+
+    // Fetching customer data from the row
+    for (auto row : customerData) {
+        if (row.size() == 4) { 
+            string name = row[0];
+            string password = row[1];
+            string email = row[2];
+            string address = row[3];
+            
+            // Creating Customer object and adding it to vector customerList
+            customerList.emplace_back(name, password, email, address); 
+        }
+    }
+
+    // <===== Fetching tasks data for the TaskBoard =====>
+    vector<vector<string>> taskData = readDataFromFile("TaskBoard-data.txt");
     TaskBoard companyTaskBoard;
-    companyTaskBoard.addTask("Organize products on shelves", "Alice Smith", 2, 6);
-    companyTaskBoard.addTask("Fix broken piece of technology", "Bob Johnson", 0, 2);
-    companyTaskBoard.addTask("Restock products", "John Doe", 4, 4);
 
-    // Creating list of customers and creating 2 exemplary customers
-    vector <Customer> customerList;
-    customerList.emplace_back("Michael Wilson", "password123", "john@gmail.com", "123 Main St");
-    customerList.emplace_back("Jennifer Brown", "abc123", "jennifer@gmail.com", "456 Elm St");
+    // Fetching task data from the row
+    for (auto row : taskData) {
+        if (row.size() >= 4) {
+            string desc = row[0];
+            string assignedEmp = row[1];
+            int priority = stoi(row[2]);
+            int time = stoi(row[3]);
+            
+            // Adding tasks to companyTaskBoard object
+            companyTaskBoard.addTask(desc, assignedEmp, priority, time);
+        }
+    }
 
     // Initializing variables for program control flow
     bool isTheProgramWorking = true; // while this variable is true the program runs
     int userChoice = 0; // variable storing current user choice
     int previousUserChoice = 0; // varibale storing previous user choice
-    vector <Products*> productsReference = { &pc1, &pc2, &pc3, &laptop1, &laptop2, &laptop3, &phone1, &phone2, &phone3 }; // vector that stores pointers to Products objects
+     
+    //vector that stores pointers to Products objects
+    vector<Products*> productsReference;
+    for (auto& pc : computers) {
+        productsReference.push_back(&pc);
+    }
+    for (auto& laptop : laptops) {
+        productsReference.push_back(&laptop);
+    }
+    for (auto& phone : phones) {
+        productsReference.push_back(&phone);
+    }
 
     int userAccount = -1; // while value -1 user is logged off / when the value is different from -1, the user is logged in
     bool productsListActive = false; // variable responsible for displaying the view of product list
@@ -803,20 +943,23 @@ int main()
                 while (productsListActive) {
                     cout << "<Products list>" << endl;
                     cout << endl;
+                    
                     cout << "Computers:" << endl;
-                    cout << "[1] " << pc1.getProductName() << " - " << pc1.getPrice() << " PLN (" << pc1.getAmount() << " pieces left)" << endl;
-                    cout << "[2] " << pc2.getProductName() << " - " << pc2.getPrice() << " PLN (" << pc2.getAmount() << " pieces left)" << endl;
-                    cout << "[3] " << pc3.getProductName() << " - " << pc3.getPrice() << " PLN (" << pc3.getAmount() << " pieces left)" << endl;
+                    for (int i = 0; i < computers.size(); ++i) {
+                        cout << "[" << i + 1 << "] " << computers[i].getProductName() << " - " << computers[i].getPrice() << " PLN (" << computers[i].getAmount() << " pieces left)" << endl;
+                    }
                     cout << endl;
+                    
                     cout << "Laptops:" << endl;
-                    cout << "[4] " << laptop1.getProductName() << " - " << laptop1.getPrice() << " PLN (" << laptop1.getAmount() << " pieces left)" << endl;
-                    cout << "[5] " << laptop2.getProductName() << " - " << laptop2.getPrice() << " PLN (" << laptop2.getAmount() << " pieces left)" << endl;
-                    cout << "[6] " << laptop3.getProductName() << " - " << laptop3.getPrice() << " PLN (" << laptop3.getAmount() << " pieces left)" << endl;
+                    for (int i = 0; i < laptops.size(); ++i) {
+                        cout << "[" << i + 1 + computers.size() << "] " << laptops[i].getProductName() << " - " << laptops[i].getPrice() << " PLN (" << laptops[i].getAmount() << " pieces left)" << endl;
+                    }
                     cout << endl;
+                    
                     cout << "Phones:" << endl;
-                    cout << "[7] " << phone1.getProductName() << " - " << phone1.getPrice() << " PLN (" << phone1.getAmount() << " pieces left)" << endl;
-                    cout << "[8] " << phone2.getProductName() << " - " << phone2.getPrice() << " PLN (" << phone2.getAmount() << " pieces left)" << endl;
-                    cout << "[9] " << phone3.getProductName() << " - " << phone3.getPrice() << " PLN (" << phone3.getAmount() << " pieces left)" << endl;
+                    for (int i = 0; i < phones.size(); ++i) {
+                        cout << "[" << i + 1 + computers.size() + laptops.size() << "] " << phones[i].getProductName() << " - " << phones[i].getPrice() << " PLN (" << phones[i].getAmount() << " pieces left)" << endl;
+                    }
                     cout << "--------------------------------------------------" << endl;
 
                     // Product list menu
@@ -856,43 +999,9 @@ int main()
                         cin >> userChoice;
                         userChoice = userChoiceVerify(userChoice, { 1, 2, 3, 4, 5, 6, 7 ,8, 9 }, false);
                         system("cls");
-                        switch (userChoice) {
-                        case 1:
-                            cout << pc1.getProductInfo() << endl;
-                            cout << pc1.getPcSpec() << endl;
-                            break;
-                        case 2:
-                            cout << pc2.getProductInfo() << endl;
-                            cout << pc2.getPcSpec() << endl;
-                            break;
-                        case 3:
-                            cout << pc3.getProductInfo() << endl;
-                            cout << pc3.getPcSpec() << endl;
-                            break;
-                        case 4:
-                            cout << laptop1.getProductInfo() << endl;
-                            cout << laptop1.getLaptopSpec() << endl;
-                            break;
-                        case 5:
-                            cout << laptop2.getProductInfo() << endl;
-                            cout << laptop2.getLaptopSpec() << endl;
-                            break;
-                        case 6:
-                            cout << laptop3.getProductInfo() << endl;
-                            cout << laptop3.getLaptopSpec() << endl;
-                            break;
-                        case 7:
-                            cout << phone1.getProductInfo() << endl;
-                            cout << phone1.getPhoneSpec() << endl;
-                            break;
-                        case 8:
-                            cout << phone2.getProductInfo() << endl;
-                            cout << phone2.getPhoneSpec() << endl;
-                            break;
-                        case 9:
-                            cout << phone3.getProductInfo() << endl;
-                            cout << phone3.getPhoneSpec() << endl;
-                            break;
+                        if (userChoice >= 1 && userChoice <= productsReference.size()) {
+                            cout << productsReference[userChoice - 1]->getProductInfo() << endl; // Displaying product info
+                            cout << productsReference[userChoice - 1]->getSpec() << endl;// Displaying product specifications
                         }
                         userChoice = 0;
                     }
@@ -1155,9 +1264,10 @@ int main()
                 employeeListActive = true;
                 while (employeeListActive) {
                     cout << "<List of employees>" << endl;
-                    cout << "[1] " << employee1.getBasicData() << endl;
-                    cout << "[2] " << employee2.getBasicData() << endl;
-                    cout << "[3] " << employee3.getBasicData() << endl;
+                    // Displaying employees from vector employeeList
+                    for (int employeeIndex = 0; employeeIndex < employeeList.size(); ++employeeIndex) {
+                        cout << "[" << (employeeIndex + 1) << "] " << employeeList[employeeIndex].getBasicData() << endl;
+                    }
                     cout << endl;
                     cout << "What would you like to do?" << endl;
                     cout << "1) Show employee details" << endl;
@@ -1173,17 +1283,7 @@ int main()
                         cout << "Choose the employee id: ";
                         cin >> userChoice;
                         userChoice = userChoiceVerify(userChoice, { 1, 2, 3 });
-                        switch (userChoice) {
-                        case 1:
-                            choosenEmployee = &employee1;
-                            break;
-                        case 2:
-                            choosenEmployee = &employee2;
-                            break;
-                        case 3:
-                            choosenEmployee = &employee3;
-                            break;
-                        }
+                        choosenEmployee = &employeeList[userChoice - 1]; // Pointer to choosen employee
                         userChoice = previousUserChoice;
                     }
 
@@ -1336,20 +1436,23 @@ int main()
                 while (productsListActive) {
                     cout << "<Products list>" << endl;
                     cout << endl;
+
                     cout << "Computers:" << endl;
-                    cout << "[1] " << pc1.getProductName() << " - " << pc1.getPrice() << " PLN (" << pc1.getAmount() << " pieces left)" << endl;
-                    cout << "[2] " << pc2.getProductName() << " - " << pc2.getPrice() << " PLN (" << pc2.getAmount() << " pieces left)" << endl;
-                    cout << "[3] " << pc3.getProductName() << " - " << pc3.getPrice() << " PLN (" << pc3.getAmount() << " pieces left)" << endl;
+                    for (int i = 0; i < computers.size(); ++i) {
+                        cout << "[" << i + 1 << "] " << computers[i].getProductName() << " - " << computers[i].getPrice() << " PLN (" << computers[i].getAmount() << " pieces left)" << endl;
+                    }
                     cout << endl;
+
                     cout << "Laptops:" << endl;
-                    cout << "[4] " << laptop1.getProductName() << " - " << laptop1.getPrice() << " PLN (" << laptop1.getAmount() << " pieces left)" << endl;
-                    cout << "[5] " << laptop2.getProductName() << " - " << laptop2.getPrice() << " PLN (" << laptop2.getAmount() << " pieces left)" << endl;
-                    cout << "[6] " << laptop3.getProductName() << " - " << laptop3.getPrice() << " PLN (" << laptop3.getAmount() << " pieces left)" << endl;
+                    for (int i = 0; i < laptops.size(); ++i) {
+                        cout << "[" << i + 1 + computers.size() << "] " << laptops[i].getProductName() << " - " << laptops[i].getPrice() << " PLN (" << laptops[i].getAmount() << " pieces left)" << endl;
+                    }
                     cout << endl;
+
                     cout << "Phones:" << endl;
-                    cout << "[7] " << phone1.getProductName() << " - " << phone1.getPrice() << " PLN (" << phone1.getAmount() << " pieces left)" << endl;
-                    cout << "[8] " << phone2.getProductName() << " - " << phone2.getPrice() << " PLN (" << phone2.getAmount() << " pieces left)" << endl;
-                    cout << "[9] " << phone3.getProductName() << " - " << phone3.getPrice() << " PLN (" << phone3.getAmount() << " pieces left)" << endl;
+                    for (int i = 0; i < phones.size(); ++i) {
+                        cout << "[" << i + 1 + computers.size() + laptops.size() << "] " << phones[i].getProductName() << " - " << phones[i].getPrice() << " PLN (" << phones[i].getAmount() << " pieces left)" << endl;
+                    }
                     cout << "--------------------------------------------------" << endl;
 
                     cout << "What would you like to do?" << endl;
@@ -1424,44 +1527,19 @@ int main()
                         system("cls");
                         cout << "Product specifications updated" << endl << endl;
 
-                        // Display modified product specification
-                        switch (userChoice) {
-                        case 1:
-                            pc1.setPcSpec(newGpu, newMemory, newDisk);
-                            cout << pc1.getPcSpec() << endl;
-                            break;
-                        case 2:
-                            pc2.setPcSpec(newGpu, newMemory, newDisk);
-                            cout << pc2.getPcSpec() << endl;
-                            break;
-                        case 3:
-                            pc3.setPcSpec(newGpu, newMemory, newDisk);
-                            cout << pc3.getPcSpec() << endl;
-                            break;
-                        case 4:
-                            laptop1.setLaptopSpec(newGpu, newMemory, newDisk, newScreenType, newScreenSize);
-                            cout << laptop1.getLaptopSpec() << endl;
-                            break;
-                        case 5:
-                            laptop2.setLaptopSpec(newGpu, newMemory, newDisk, newScreenType, newScreenSize);
-                            cout << laptop2.getLaptopSpec() << endl;
-                            break;
-                        case 6:
-                            laptop3.setLaptopSpec(newGpu, newMemory, newDisk, newScreenType, newScreenSize);
-                            cout << laptop3.getLaptopSpec() << endl;
-                            break;
-                        case 7:
-                            phone1.setPhoneSpec(newScreenSize, newRamSize, newMemorySize, newBatterySize);
-                            cout << phone1.getPhoneSpec() << endl;
-                            break;
-                        case 8:
-                            phone2.setPhoneSpec(newScreenSize, newRamSize, newMemorySize, newBatterySize);
-                            cout << phone2.getPhoneSpec() << endl;
-                            break;
-                        case 9:
-                            phone3.setPhoneSpec(newScreenSize, newRamSize, newMemorySize, newBatterySize);
-                            cout << phone3.getPhoneSpec() << endl;
-                            break;
+                        // Modify product and display
+                        if (userChoice == 1 || userChoice == 2 || userChoice == 3) {
+                            // Computer
+                            dynamic_cast<Computer*>(productsReference[userChoice - 1])->setPcSpec(newGpu, newMemory, newDisk);
+                            cout << productsReference[userChoice - 1]->getSpec() << endl;
+                        } else if (userChoice == 4 || userChoice == 5 || userChoice == 6) {
+                            // Laptop
+                            dynamic_cast<Laptop*>(productsReference[userChoice - 1])->setLaptopSpec(newGpu, newMemory, newDisk, newScreenType, newScreenSize);
+                            cout << productsReference[userChoice - 1]->getSpec() << endl;
+                        } else if (userChoice == 7 || userChoice == 8 || userChoice == 9) {
+                            // Phone
+                            dynamic_cast<Phone*>(productsReference[userChoice - 1])->setPhoneSpec(newScreenSize, newRamSize, newMemorySize, newBatterySize);
+                            cout << productsReference[userChoice - 1]->getSpec() << endl;
                         }
                         userChoice = 0;
                     }
@@ -1531,7 +1609,7 @@ void testComputerClass() {
         assert(computerTest.getPrice() == 2899);
         assert(computerTest.getAmount() == 200);
         assert(computerTest.getProductInfo() == "Product name: HP Pro 290 G9 SFF\nCost: 2899 PLN\nAmount of products: 200\n");
-        assert(computerTest.getPcSpec() == "Computer specifications: \n* System - Windows 11 Pro\n* Cpu - Intel Core i5-13500\n* Gpu - Intel UHD Graphics 770\n* Memory - 16 GB (DIMM DDR4, 3200 MHz)\n* Disk - 512 GB SSD PCIe\n");
+        assert(computerTest.getSpec() == "Computer specifications: \n* System - Windows 11 Pro\n* Cpu - Intel Core i5-13500\n* Gpu - Intel UHD Graphics 770\n* Memory - 16 GB (DIMM DDR4, 3200 MHz)\n* Disk - 512 GB SSD PCIe\n");
     }
     //cout << "Computer class valid" << endl;
     //cout << endl;
@@ -1548,7 +1626,7 @@ void testLaptopClass() {
         assert(laptopTest.getPrice() == 4200);
         assert(laptopTest.getAmount() == 1);
         assert(laptopTest.getProductInfo() == "Product name: Lenovo ThinkPad E16\nCost: 4200 PLN\nAmount of products: 1\n");
-        assert(laptopTest.getLaptopSpec() == "Computer specifications: \n* System - Windows 11 Pro\n* Cpu - Intel Core i5-1335U\n* Gpu - Intel Iris Xe Graphics\n* Memory - 16 GB (DDR4, 3200 MHz)\n* Disk - 512 GB SSD M.2 PCIe\n* Screen - 16\" Matte, LED, IPS\n");
+        assert(laptopTest.getSpec() == "Computer specifications: \n* System - Windows 11 Pro\n* Cpu - Intel Core i5-1335U\n* Gpu - Intel Iris Xe Graphics\n* Memory - 16 GB (DDR4, 3200 MHz)\n* Disk - 512 GB SSD M.2 PCIe\n* Screen - 16\" Matte, LED, IPS\n");
     }
     //cout << "Laptop class valid" << endl;
     //cout << endl;
@@ -1565,7 +1643,7 @@ void testPhoneClass() {
         assert(phoneTest.getPrice() == 3799);
         assert(phoneTest.getAmount() == 73);
         assert(phoneTest.getProductInfo() == "Product name: Samsung Galaxy S23\nCost: 3799 PLN\nAmount of products: 73\n");
-        assert(phoneTest.getPhoneSpec() == "Phone specifications: \n* System - Android 13\n* Cpu - Qualcomm Snapdragon 8 gen 2\n* Screen - 6.1\"\n* RAM - 256 GB\n* Built-in memory - 256GB\n* Battery capacity - 3900 mAh\n");
+        assert(phoneTest.getSpec() == "Phone specifications: \n* System - Android 13\n* Cpu - Qualcomm Snapdragon 8 gen 2\n* Screen - 6.1\"\n* RAM - 256 GB\n* Built-in memory - 256GB\n* Battery capacity - 3900 mAh\n");
     }
     //cout << "Phone class valid" << endl;
     //cout << endl;
@@ -1716,4 +1794,17 @@ void testCustomerClass() {
     }
     //cout << "Customer class valid" << endl;
     //cout << endl;
+}
+
+void testreadDataFromFileFunc() {
+    vector<vector<string>> actualData = readDataFromFile("Test-data.txt");
+    
+    vector<vector<string>> expectedData = {
+       {"Circle", "12", "Blue", "!@#$"},
+       {"Square", "26", "Green", "+_)("},
+    };
+    
+    // Chcecking if data from file matches the expectedData
+    assert(actualData == expectedData);
+    //cout << "Test passed: Data from file matches expected data." << endl;
 }
